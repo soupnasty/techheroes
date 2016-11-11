@@ -87,3 +87,13 @@ ENV/
 
 # Rope project settings
 .ropeproject
+
+# Coverage
+coverage/
+.coverage
+.cache
+
+# static validation files
+.prospector.yml
+.coveragerc
+
