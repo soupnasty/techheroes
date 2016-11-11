@@ -12,18 +12,23 @@ There are a few configurations managed as environment variables. In the developm
 * `SECRET_KEY` - This is a secret string. It is used to encrypt and verify the authentication token on routes that require authentication. This is required. The app won't start without it.
 
 
-## Steps to get the api server running locally
+## Steps to get Docker setup
 1. Create a env folder with a dev.txt file in your local project directory
 2. Insert needed environment variables in dev.txt file: SECRET_KEY=anything, DEBUG=True
 3. Install docker, docker-compose and docker-machine
 4. Create a docker-machine `docker-machine create --driver "virtualbox" myBoxName`
 5. Start the machine `docker-machine start myBoxName`
 6. Allow docker-machine commands to be used in terminal `eval "$(docker-machine env myBoxName)"`
-7. Run `docker-compose build` to create the image
-8. Run `docker-compose up -d` to start all containers in the background
-9. Run `docker-compose run web python manage.py migrate` to make initial migrations
-10. Run `docker-compose run web py.test` to run tests
-11. Routes can be hit using your docker-machine's ip
+7. Make sure the machine is running `docker-machine ls`
+8. Run `docker-compose build` to build the image
+3. Run 'docker-machine ip' to check the local server's ip
+
+## Steps to setup api server locally
+1. Run `docker-compose run web python manage.py migrate` to make initial migrations
+2. Run `docker-compose up` to start all containers
+
+# Run Tests
+`docker-compose run web py.test`
 
 
 ## API Table of Contents
