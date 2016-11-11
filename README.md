@@ -22,3 +22,173 @@ There are a few configurations managed as environment variables. In the developm
 7. Run `docker-compose run web python manage.py migrate` to make initial migrations
 8. Run `docker-compose run web py.test` to run tests
 9. Routes can be hit using your docker-machine's ip
+
+
+## API Table of Contents
+
+#### Users
+- [Register a new user](#register-a-new-user)
+- [Login a user](#login-a-user)
+- [Logout a user](#logout-a-user)
+- [Get the users profile](#get-the-users-profile)
+- [Update the users profile](#update-the-users-profile)
+
+
+## API Routes
+
+
+### Users
+Users only require first_name, last_name, email and password to create an account. After creating an account, a user will have to verify their email address by clicking a link sent to their email in order to be able to request a Hero.
+
+#### Register a new user
+
+**POST:** `/api/v1/user/register`
+
+**Body:**
+```json
+{
+    "first_name": "Cam",
+    "last_name": "Newton",
+    "email": "test@test.com",
+    "password": "password1"
+}
+```
+
+**Notes:**
+- `email`: user's email address, must be unique (string)
+- `password`: must be at least 8 chars with at least 1 number (string)
+- Registering a user will return a valid API auth token.
+
+**Response:**
+```json
+{
+    "id": "99823072-2bcc-4db0-b49e-2f3d8d3dab48",
+    "email": "test@test.com",
+    "first_name": "Cam",
+    "last_name": "Newton",
+    "email_verified": false,
+    "is_active": true,
+    "recieve_notifications": true,
+    "created": "2016-11-11T03:42:40.490575Z",
+    "updated": "2016-11-11T03:53:54.061195Z",
+    "token": "67477a987c024e26b618bc588975f93c"
+}
+```
+
+**Status Codes:**
+- `201` if successfully created
+- `400` if incorrect data is provided
+- `409` if the email already exist
+
+
+#### Login a user
+
+**POST:** `/api/v1/user/login`
+
+**Body:**
+```json
+{
+    "email": "test@test.com",
+    "password": "password1"
+}
+```
+
+**Response:**
+```json
+{
+    "id": "99823072-2bcc-4db0-b49e-2f3d8d3dab48",
+    "email": "test@test.com",
+    "first_name": "Cam",
+    "last_name": "Newton",
+    "email_verified": false,
+    "is_active": true,
+    "recieve_notifications": true,
+    "created": "2016-11-11T03:42:40.490575Z",
+    "updated": "2016-11-11T03:53:54.061195Z",
+    "token": "67477a987c024e26b618bc588975f93c"
+}
+```
+
+**Status Codes:**
+- `200` if successful
+- `400` if invalid data is sent
+- `403` if email and/or password are incorrect
+
+
+#### Logout a user
+
+**DELETE:** `/api/v1/user/logout`
+
+**Notes:**
+- Deletes the current auth token for the user.
+
+**Response:** None
+
+**Status Codes:**
+- `204` if successful
+
+
+#### Get the users profile
+
+**GET:** `/api/v1/user/`
+
+**Response:**
+```json
+{
+    "id": "99823072-2bcc-4db0-b49e-2f3d8d3dab48",
+    "email": "test@test.com",
+    "first_name": "Cam",
+    "last_name": "Newton",
+    "email_verified": false,
+    "is_active": true,
+    "recieve_notifications": true,
+    "created": "2016-11-11T03:42:40.490575Z",
+    "updated": "2016-11-11T03:53:54.061195Z",
+    "token": "67477a987c024e26b618bc588975f93c"
+}
+```
+
+**Status Codes:**
+- `200` if successful
+- `403` if no/incorrect token
+- `404` if user does not exist
+
+
+#### Update the users profile
+
+**PATCH:** `/api/v1/user`
+
+**Body:**
+```json
+{
+    "first_name": "Tom",
+    "last_name": "Brady",
+    "email": "bradytime@gmail.com",
+}
+```
+
+**Notes:**
+- `phone`: A ten-digit US phone number as string
+- When a user updates `email`, the user will receive a verification email. `email_verified` will remain false and `email` will remain their old email until the user verifies their email token.
+- When a user updates `phone`, the user will receive a verification text. `phone_verified` will remain false and `phone` will remain null until the user verifies their phone token.
+
+**Response:**
+```json
+{
+    "id": "99823072-2bcc-4db0-b49e-2f3d8d3dab48",
+    "first_name": "Tom",
+    "last_name": "Brady",
+    "email": "bradytime@gmail.com",
+    "email_verified": false,
+    "is_active": true,
+    "recieve_notifications": true,
+    "created": "2016-11-11T03:42:40.490575Z",
+    "updated": "2016-11-11T03:53:54.061195Z",
+    "token": "67477a987c024e26b618bc588975f93c"
+}
+```
+
+**Status Codes:**
+- `200` if successful
+- `400` if incorrect data is provided
+- `403` if user is not authorized or verified
