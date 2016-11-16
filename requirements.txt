@@ -10,6 +10,10 @@ docker-compose==1.9.0rc4
 # PostgresSQL
 psycopg2==2.6.2
 
+# Timezones
+pytz==2016.7
+django-timezone-field==2.0
+
 # Testing
 mock==2.0.0
 factory-boy==2.7.0

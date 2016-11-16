@@ -69,7 +69,7 @@ class LogoutUserView(GenericAPIView):
 
 class RetrieveUpdateUserView(RetrieveUpdateAPIView):
     model = User
-    serializer_class = UserSerializer
+    serializer_class = UserWithTokenSerializer
 
     def get_object(self):
         return self.request.user
