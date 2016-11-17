@@ -51,6 +51,7 @@ There are a few configurations managed as environment variables. In the developm
 - [Update Hero profile](#update-hero-profile)
 - [Accept Hero](#accept-hero)
 - [Decline Hero](#decline-hero)
+- [Get Hero list](#get-hero-list)
 
 
 ## API Routes
@@ -673,3 +674,86 @@ After creating a user account and verifying their email, a user can apply to be 
 - `200` if successful
 - `400` if incorrect data is provided
 - `403` if the user is not staff
+
+
+#### Get Hero List
+
+**GET:** `/api/v1/heroes/list`
+
+**Notes:**
+- This lists all the heroes that have been accepted by staff.
+- This route is allowed by an anon user
+
+**Response:**
+```json
+{
+  "count": 2,
+  "next": null,
+  "previous": null,
+  "results": [
+    {
+      "id": "ab8996b5-edd5-40d0-bc90-ed8b578df9d5",
+      "user": {
+        "id": "878d0570-4763-41f9-b122-bc46e444d62d",
+        "first_name": "Clark",
+        "last_name": "Kent",
+        "created": "2016-11-17T22:28:42.769133Z"
+      },
+      "discipline": "FE",
+      "short_bio": "I am an awesome front end engineer!",
+      "resume": "This is my resume",
+      "years_of_exp": 10,
+      "rate_in_cents": 500,
+      "skills": [
+        {
+          "name": "Javascript",
+          "years": 10
+        },
+        {
+          "name": "Django",
+          "years": 5
+        },
+        {
+          "name": "ReactJS",
+          "years": 9
+        }
+      ],
+      "linkedin_url": "http://www.django-rest-framework.org",
+      "created": "2016-11-17T22:29:31.790223Z"
+    },
+    {
+      "id": "b55dcf4a-e723-495e-b920-738c4b6d221d",
+      "user": {
+        "id": "7ee66bfc-02a6-42ac-a488-affd5105d5a1",
+        "first_name": "Tech",
+        "last_name": "Hero",
+        "created": "2016-11-17T21:55:27.410554Z"
+      },
+      "discipline": "BE",
+      "short_bio": "I am an awesome backend engineer!",
+      "resume": "This is my resume",
+      "years_of_exp": 3,
+      "rate_in_cents": 100,
+      "skills": [
+        {
+          "name": "Python",
+          "years": 2
+        },
+        {
+          "name": "Django",
+          "years": 2
+        },
+        {
+          "name": "ReactJS",
+          "years": 2
+        }
+      ],
+      "linkedin_url": "http://www.django-rest-framework.org",
+      "created": "2016-11-17T21:56:53.935553Z"
+    }
+  ]
+}
+```
+
+**Status Codes:**
+- `200` if successful

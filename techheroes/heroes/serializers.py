@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from accounts.serializers import UserWithTokenSerializer
+from accounts.serializers import UserSerializer, UserWithTokenSerializer
 
 from .models import Hero, HeroAcceptAction
 
@@ -25,6 +25,15 @@ class CreateUpdateHeroSerializer(serializers.Serializer):
         if value not in disciplines:
             raise serializers.ValidationError('Discipline must be in {}'.format(disciplines))
         return value
+
+
+class HeroSerializer(serializers.ModelSerializer):
+    user = UserSerializer(many=False)
+
+    class Meta:
+        model = Hero
+        fields = ('id', 'user', 'discipline', 'short_bio', 'resume', 'years_of_exp',
+                        'rate_in_cents', 'skills', 'linkedin_url', 'created')
 
 
 class HeroWithTokenSerializer(serializers.ModelSerializer):

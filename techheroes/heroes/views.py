@@ -1,5 +1,6 @@
 from rest_framework import status, generics
 from rest_framework.exceptions import PermissionDenied
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
 from accounts.models import User
@@ -9,7 +10,7 @@ from utils.mixins import AtomicMixin
 from .models import Hero, HeroAcceptAction
 from .permissions import IsHeroOrStaff
 from .serializers import (CreateUpdateHeroSerializer, HeroWithTokenSerializer, AcceptDeclineHeroSerializer,
-    HeroAcceptActionSerializer)
+    HeroAcceptActionSerializer, HeroSerializer)
 
 
 class ApplyForHeroView(AtomicMixin, generics.GenericAPIView):
@@ -89,3 +90,9 @@ class DeclineHeroView(generics.CreateAPIView):
         accept_action = HeroAcceptAction.objects.create(user=request.user, hero=hero, accepted=hero.accepted)
         serializer = HeroAcceptActionSerializer(accept_action)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class GetHeroListView(generics.ListAPIView):
+    serializer_class = HeroSerializer
+    permission_classes = (AllowAny,)
+    queryset = Hero.objects.filter(accepted=True)
