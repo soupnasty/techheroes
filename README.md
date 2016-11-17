@@ -676,7 +676,7 @@ After creating a user account and verifying their email, a user can apply to be 
 - `403` if the user is not staff
 
 
-#### Get Hero List
+#### Get Hero list
 
 **GET:** `/api/v1/heroes/list`
 
