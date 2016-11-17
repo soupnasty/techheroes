@@ -33,7 +33,7 @@ There are a few configurations managed as environment variables. In the developm
 
 ## API Table of Contents
 
-#### Users
+#### User Routes
 - [Register a new user](#register-a-new-user)
 - [Login a user](#login-a-user)
 - [Logout a user](#logout-a-user)
@@ -45,16 +45,18 @@ There are a few configurations managed as environment variables. In the developm
 - [Request a password reset](#request-a-password-reset)
 - [Reset a users password](#reset-a-users-password)
 
-#### Heroes
+#### Hero Routes
 - [Apply to be Hero](#apply-to-be-hero)
 - [Get Hero profile](#get-hero-profile)
 - [Update Hero profile](#update-hero-profile)
+- [Accept Hero](#accept-hero)
+- [Decline Hero](#decline-hero)
 
 
 ## API Routes
 
 
-### Users
+### User Routes
 Users only require first_name, last_name, email and password to create an account. After creating an account, a user will have to verify their email address by clicking a link sent to their email (EMAIL VERIFICATION HAS NOT BEEN IMPLEMENTED YET). This applies to both Heroes and Users.
 
 #### Register a new user
@@ -377,7 +379,7 @@ Users only require first_name, last_name, email and password to create an accoun
 - `404` if the token is invalid or expired
 
 
-### Heros
+### Hero Routes
 After creating a user account and verifying their email, a user can apply to be a Hero.
 
 #### Apply to be Hero
@@ -423,6 +425,7 @@ After creating a user account and verifying their email, a user can apply to be 
 **Response:**
 ```json
 {
+    "id": "b55dcf4a-e723-495e-b920-738c4b6d221d",
     "user": {
         "id": "085e8bbf-4430-4df8-9233-8269b52bd4bf",
         "first_name": "Tom",
@@ -480,6 +483,7 @@ After creating a user account and verifying their email, a user can apply to be 
 **Response:**
 ```json
 {
+    "id": "b55dcf4a-e723-495e-b920-738c4b6d221d",
     "user": {
         "id": "085e8bbf-4430-4df8-9233-8269b52bd4bf",
         "first_name": "Tom",
@@ -561,6 +565,7 @@ After creating a user account and verifying their email, a user can apply to be 
 **Response:**
 ```json
 {
+   "id": "b55dcf4a-e723-495e-b920-738c4b6d221d",
     "user": {
       "id": "085e8bbf-4430-4df8-9233-8269b52bd4bf",
       "first_name": "Tom",
@@ -606,3 +611,65 @@ After creating a user account and verifying their email, a user can apply to be 
 - `200` if successful
 - `400` if incorrect data is provided
 - `403` if user is not authorized or verified
+
+
+#### Accept Hero
+
+**POST:** `/api/v1/heroes/accept`
+
+**Body:**
+```json
+{
+  	"hero_id":"b55dcf4a-e723-495e-b920-738c4b6d221d"
+}
+```
+
+**Notes:**
+- `hero_id`: the hero's id (UUID)
+- The user must be a staff member
+
+**Response:**
+```json
+{
+    "user": "fd6494d8-e684-4f4b-960c-c83f56d1d790",
+    "hero": "b55dcf4a-e723-495e-b920-738c4b6d221d",
+    "accepted": true,
+    "timestamp": "2016-11-17T22:05:52.093318Z"
+}
+```
+
+**Status Codes:**
+- `200` if successful
+- `400` if incorrect data is provided
+- `403` if the user is not staff
+
+
+#### Decline Hero
+
+**POST:** `/api/v1/heroes/decline`
+
+**Body:**
+```json
+{
+  	"hero_id":"b55dcf4a-e723-495e-b920-738c4b6d221d"
+}
+```
+
+**Notes:**
+- `hero_id`: the hero's id (UUID)
+- The user must be a staff member
+
+**Response:**
+```json
+{
+    "user": "fd6494d8-e684-4f4b-960c-c83f56d1d790",
+    "hero": "b55dcf4a-e723-495e-b920-738c4b6d221d",
+    "accepted": false,
+    "timestamp": "2016-11-17T22:06:50.108634Z"
+}
+```
+
+**Status Codes:**
+- `200` if successful
+- `400` if incorrect data is provided
+- `403` if the user is not staff

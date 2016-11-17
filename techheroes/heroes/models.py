@@ -24,6 +24,7 @@ class Hero(models.Model):
         (DESIGN, 'UX Design'),
     )
 
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.OneToOneField(User)
     discipline = models.CharField(max_length=2, choices=DISCIPLINES, default=None, null=True)
     short_bio = models.CharField(max_length=200, default='')
@@ -42,4 +43,17 @@ class Hero(models.Model):
 
     def get_full_name(self):
         return "{0} {1}".format(self.user.first_name, self.user.last_name)
+
+
+class HeroAcceptAction(models.Model):
+    user = models.ForeignKey(User, related_name='hero_accept_actions')
+    hero = models.ForeignKey(Hero, related_name='hero_accpet_actions')
+    accepted = models.BooleanField()
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        if self.accepted:
+            return self.user.get_full_name() + ' accepted ' + self.hero.user.get_full_name() + ' on ' + self.timestamp
+        else:
+            return self.user.get_full_name() + ' declined ' + self.hero.user.get_full_name() + ' on ' + self.timestamp
 
