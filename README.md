@@ -39,6 +39,11 @@ There are a few configurations managed as environment variables. In the developm
 - [Logout a user](#logout-a-user)
 - [Get the users profile](#get-the-users-profile)
 - [Update the users profile](#update-the-users-profile)
+- [Verify a users email](#verify-a-users-email)
+- [Verify a users phone](#verify-a-users-phone)
+- [Change the users password](#change-the-users-password)
+- [Request a password reset](#request-a-password-reset)
+- [Reset a users password](#reset-a-users-password)
 
 #### Heroes
 - [Apply to be Hero](#apply-to-be-hero)
@@ -220,6 +225,156 @@ Users only require first_name, last_name, email and password to create an accoun
 - `200` if successful
 - `400` if incorrect data is provided
 - `403` if user is not authorized or verified
+
+
+#### Verify a users email
+
+**POST:** `/api/v1/accounts/verify-email` (NOT COMPLETE YET)
+
+**Body:**
+```json
+{
+    "code": "12dfg2wer6a342g23456",
+}
+```
+
+**Notes:**
+- `code`: Email verification codes are 20 character combinations of lowercase letters and digits
+
+**Response:**
+```json
+{
+    "id": "085e8bbf-4430-4df8-9233-8269b52bd4bf",
+    "first_name": "Tom",
+    "last_name": "Brady",
+    "email": "bradytime@gmail.com",
+    "email_verified": true,
+    "email_notifications": false,
+    "phone": "1234567890",
+    "phone_verified": false,
+    "profile_image": "https://media.licdn.com/mpr/mpr/shrink_100_100/p/5/005/040/0cd/008cf89.jpg",
+    "is_active": false,
+    "created": "2016-11-16T15:56:56.179930Z",
+    "updated": "2016-11-16T17:02:27.978451Z",
+    "token": "ccf66788480947c48e7c7a3eb168ee12"
+}
+```
+
+**Status Codes:**
+- `200` if successful
+- `400` is bad data is sent
+- `403` if user is not authenticated
+- `404` if the code is invalid or expired
+
+
+#### Verify a users phone
+
+**POST:** `/api/v1/accounts/verify-phone` (NOT COMPLETE YET)
+
+**Body:**
+```json
+{
+    "code": "abc123",
+}
+```
+
+**Notes:**
+- `code`: Phone verification codes are 6 character combinations of lowercase letters and digits
+
+**Response:**
+```json
+{
+    "id": "085e8bbf-4430-4df8-9233-8269b52bd4bf",
+    "first_name": "Tom",
+    "last_name": "Brady",
+    "email": "bradytime@gmail.com",
+    "email_verified": true,
+    "email_notifications": true,
+    "phone": "1234567890",
+    "phone_verified": true,
+    "profile_image": "https://media.licdn.com/mpr/mpr/shrink_100_100/p/5/005/040/0cd/008cf89.jpg",
+    "is_active": false,
+    "created": "2016-11-16T15:56:56.179930Z",
+    "updated": "2016-11-16T17:02:27.978451Z",
+    "token": "ccf66788480947c48e7c7a3eb168ee12"
+}
+```
+
+**Status Codes:**
+- `200` if successful
+- `400` is bad data is sent
+- `403` if user is not authenticated
+- `404` if the code is invalid or expired
+
+
+#### Change the users password
+
+**POST:** `/api/v1/accounts/change-password` (NOT COMPLETE YET)
+
+**Body:**
+```json
+{
+    "old_password": "oldpass1",
+    "new_password": "newpass1"
+}
+```
+
+**Notes:**
+- `old_password`: must be at least 8 chars with at least 1 number
+- `new_password`: must be at least 8 chars with at least 1 number
+
+**Response:** None
+
+**Status Codes:**
+- `200` if successful
+- `400` if invalid data is provided, or `old_password` doesn't match
+- `403` if user is not authenticated
+
+
+#### Request a password reset
+
+**POST:** `/api/v1/accounts/request-password` (NOT COMPLETE YET)
+
+**Body:**
+```json
+{
+    "email": "test@test.com",
+}
+```
+
+**Notes:**
+- `email` can be any valid email address. The reset code will be emailed to the user.
+
+**Response:** None
+
+**Status Codes:**
+- `200` if successful
+- `400` is bad data is sent
+- `404` if the email is not found
+
+
+#### Reset a users password
+
+**POST:** `/api/v1/accounts/reset-password` (NOT COMPLETE YET)
+
+**Body:**
+```json
+{
+    "token": "12dfg2wer6a342g23456",
+    "new_password": "newpass1"
+}
+```
+
+**Notes:**
+- `password`: must be at least 8 chars with at least 1 number
+- `token`: verification token is a 20 character combinations of lowercase letters and digits
+
+**Response:** None
+
+**Status Codes:**
+- `200` if successful
+- `400` is bad data is sent
+- `404` if the token is invalid or expired
 
 
 ### Heros
