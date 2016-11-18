@@ -111,9 +111,13 @@ Users only require first_name, last_name, email and password to create an accoun
 ```json
 {
     "email": "test@test.com",
-    "password": "password1"
+    "password": "password1",
+    "platform": "mobile"
 }
 ```
+
+**Notes:**
+- `platform`: this is an optional field and valid choices are `web` and `mobile`
 
 **Response:**
 ```json

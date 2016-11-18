@@ -40,15 +40,15 @@ class LoginUserView(GenericAPIView):
         data = self.serializer_class(data=request.data)
         data.is_valid(raise_exception=True)
 
-        try:
-            user = User.objects.get(email=data.validated_data['email'])
-        except User.DoesNotExist:
-            error = {'detail': 'User with this email does not exist.'}
-            return Response(error, status=status.HTTP_404_NOT_FOUND)
-
+        user = User.objects.get(email=data.validated_data['email'])
         if not user.check_password(data.validated_data['password']):
             error = {'detail': 'Password is incorrect.'}
             return Response(error, status=status.HTTP_403_FORBIDDEN)
+
+        platform = data.validated_data.get('platform', None)
+        if platform == 'mobile' and not user.has_app:
+            user.has_app = True
+            user.save()
 
         user.login()
         serializer = UserWithTokenSerializer(user)

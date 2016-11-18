@@ -19,8 +19,20 @@ class RegisterUserSerializer(serializers.Serializer):
 
 
 class LoginUserSerializer(serializers.Serializer):
-    email = LowerEmailField()
+    email = LowerEmailField(validators=[valid_email])
     password = serializers.CharField(validators=[valid_password])
+    platform = serializers.CharField(required=False)
+
+    def validate_platform(self, value):
+        if not value.lower() in ['web', 'mobile']:
+            raise serializers.ValidationError('Platform must be web or mobile.')
+        return value.lower()
+
+    def validate_email(self, value):
+        """Check if user with this email already exists"""
+        if not User.objects.filter(email=value).exists():
+            raise serializers.ValidationError('User with this email does not exist.')
+        return value
 
 
 class UserSerializer(serializers.ModelSerializer):

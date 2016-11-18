@@ -48,6 +48,7 @@ class User(AbstractBaseUser):
     phone = models.CharField(max_length=10, unique=True, null=True)
     phone_verified = models.BooleanField(default=False)
     profile_image = models.URLField(blank=True, null=True)
+    has_app = models.BooleanField(default=False)
 
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
