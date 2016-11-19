@@ -2,19 +2,27 @@ import re
 
 from disposable_email_checker.validators import validate_disposable_email
 from django.core.exceptions import ValidationError
-from django.core.validators import validate_email as django_validate_email
+from django.core.validators import validate_email
 
 from rest_framework import serializers
 
 
 # Validators
+def is_email(value):
+    try:
+        validate_email(value)
+        return True
+    except ValidationError:
+        return False
+
+
 def valid_email(value):
     """Validate a single email."""
     if not value:
         return False
     # Check the regex, using the validate_email from django.
     try:
-        django_validate_email(value)
+        validate_email(value)
     except ValidationError:
         raise serializers.ValidationError(
             'Email is not a valid email.')
@@ -28,6 +36,17 @@ def valid_email(value):
         else:
             return
 
+
+def is_phone(value):
+    return re.match(r'^\d{10}$', value)
+
+
+def valid_phone(value):
+    if is_phone(value):
+        return
+    raise serializers.ValidationError('Phone numbers must be 10 digits.')
+
+
 def valid_password(value):
     long_enough = len(value) >= 8
     contains_digit = bool(re.search(r'[\d]', value))
@@ -37,10 +56,22 @@ def valid_password(value):
         'Passwords must be at least 8 characters and contain at least one digit.')
 
 
-def valid_verification_token(value):
-    if re.match(r'^[abcdefghjkmnopqrstuvwxyz0123456789]{20}$', value):
+def valid_email_token(value):
+    if re.match(r'^[abcdefghjkmnopqrstuvwxyz0123456789]{10}$', value):
         return
-    raise serializers.ValidationError('{} is not a valid verification token.'.format(value))
+    raise serializers.ValidationError('{} is not a valid email verification token.'.format(value))
+
+
+def valid_phone_token(value):
+    if re.match(r'^[abcdefghjkmnopqrstuvwxyz0123456789]{6}$', value):
+        return
+    raise serializers.ValidationError('{} is not a valid phone verification token.'.format(value))
+
+
+def valid_password_token(value):
+    if re.match(r'^[abcdefghjkmnopqrstuvwxyz0123456789]{8}$', value):
+        return
+    raise serializers.ValidationError('{} is not a valid password verification token.'.format(value))
 
 
 # Custom always-lowercase email field

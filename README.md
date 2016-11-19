@@ -91,6 +91,8 @@ Users only require first_name, last_name, email and password to create an accoun
     "phone_verified": false,
     "profile_image": null,
     "is_active": false,
+    "email_pending": "test@test.com",
+    "phone_pending": null,
     "created": "2016-11-16T15:56:56.179930Z",
     "updated": "2016-11-16T15:59:09.189275Z",
     "token": "ccf66788480947c48e7c7a3eb168ee12"
@@ -132,6 +134,8 @@ Users only require first_name, last_name, email and password to create an accoun
     "phone_verified": false,
     "profile_image": null,
     "is_active": false,
+    "email_pending": "test@test.com",
+    "phone_pending": null,
     "created": "2016-11-16T15:56:56.179930Z",
     "updated": "2016-11-16T15:59:09.189275Z",
     "token": "ccf66788480947c48e7c7a3eb168ee12"
@@ -174,6 +178,8 @@ Users only require first_name, last_name, email and password to create an accoun
     "phone_verified": false,
     "profile_image": null,
     "is_active": false,
+    "email_pending": "test@test.com",
+    "phone_pending": null,
     "created": "2016-11-16T15:56:56.179930Z",
     "updated": "2016-11-16T15:59:09.189275Z",
     "token": "ccf66788480947c48e7c7a3eb168ee12"
@@ -206,7 +212,9 @@ Users only require first_name, last_name, email and password to create an accoun
 **Notes:**
 - `phone`: A ten-digit US phone number as string
 - When a user updates `email`, the user will receive a verification email. `email_verified` will remain false and `email` will remain their old email until the user verifies their email token.
+- `email_pending`: this is the email that is awaiting to be saved for the user once they verify
 - When a user updates `phone`, the user will receive a verification text. `phone_verified` will remain false and `phone` will remain null until the user verifies their phone token.
+- `phone_pending`: this is the phone number that is awaiting to be saved for the user once they verify
 - `profile_image` is a image url link
 
 **Response:**
@@ -218,10 +226,12 @@ Users only require first_name, last_name, email and password to create an accoun
     "email": "bradytime@gmail.com",
     "email_verified": false,
     "email_notifications": false,
-    "phone": "1234567890",
+    "phone": null,
     "phone_verified": false,
     "profile_image": "https://media.licdn.com/mpr/mpr/shrink_100_100/p/5/005/040/0cd/008cf89.jpg",
     "is_active": false,
+    "email_pending": "test@test.com",
+    "phone_pending": "1234567890",
     "created": "2016-11-16T15:56:56.179930Z",
     "updated": "2016-11-16T17:02:27.978451Z",
     "token": "ccf66788480947c48e7c7a3eb168ee12"
@@ -236,17 +246,18 @@ Users only require first_name, last_name, email and password to create an accoun
 
 #### Verify a users email
 
-**POST:** `/api/v1/accounts/verify-email` (NOT COMPLETE YET)
+**POST:** `/api/v1/accounts/verify-email`
 
 **Body:**
 ```json
 {
-    "code": "12dfg2wer6a342g23456",
+    "token": "12dfg2wer6",
 }
 ```
 
 **Notes:**
-- `code`: Email verification codes are 20 character combinations of lowercase letters and digits
+- `token`: Email verification tokens are 10 character combinations of lowercase letters and digits
+- Once the email is verified `email_pending` becomes null and `email_verified` becomes true
 
 **Response:**
 ```json
@@ -257,10 +268,12 @@ Users only require first_name, last_name, email and password to create an accoun
     "email": "bradytime@gmail.com",
     "email_verified": true,
     "email_notifications": false,
-    "phone": "1234567890",
+    "phone": null,
     "phone_verified": false,
     "profile_image": "https://media.licdn.com/mpr/mpr/shrink_100_100/p/5/005/040/0cd/008cf89.jpg",
     "is_active": false,
+    "email_pending": null,
+    "phone_pending": "1234567890",
     "created": "2016-11-16T15:56:56.179930Z",
     "updated": "2016-11-16T17:02:27.978451Z",
     "token": "ccf66788480947c48e7c7a3eb168ee12"
@@ -271,22 +284,23 @@ Users only require first_name, last_name, email and password to create an accoun
 - `200` if successful
 - `400` is bad data is sent
 - `403` if user is not authenticated
-- `404` if the code is invalid or expired
+- `404` if the token is invalid or expired
 
 
 #### Verify a users phone
 
-**POST:** `/api/v1/accounts/verify-phone` (NOT COMPLETE YET)
+**POST:** `/api/v1/accounts/verify-phone`
 
 **Body:**
 ```json
 {
-    "code": "abc123",
+    "token": "abc123",
 }
 ```
 
 **Notes:**
-- `code`: Phone verification codes are 6 character combinations of lowercase letters and digits
+- `token`: Phone verification tokens are 6 character combinations of lowercase letters and digits
+- Once the phone is verified `phone_pending` becomes null and `phone_verified` becomes true
 
 **Response:**
 ```json
@@ -301,6 +315,8 @@ Users only require first_name, last_name, email and password to create an accoun
     "phone_verified": true,
     "profile_image": "https://media.licdn.com/mpr/mpr/shrink_100_100/p/5/005/040/0cd/008cf89.jpg",
     "is_active": false,
+    "email_pending": null,
+    "phone_pending": null,
     "created": "2016-11-16T15:56:56.179930Z",
     "updated": "2016-11-16T17:02:27.978451Z",
     "token": "ccf66788480947c48e7c7a3eb168ee12"
@@ -311,12 +327,12 @@ Users only require first_name, last_name, email and password to create an accoun
 - `200` if successful
 - `400` is bad data is sent
 - `403` if user is not authenticated
-- `404` if the code is invalid or expired
+- `404` if the token is invalid or expired
 
 
 #### Change the users password
 
-**POST:** `/api/v1/accounts/change-password` (NOT COMPLETE YET)
+**POST:** `/api/v1/accounts/change-password`
 
 **Body:**
 ```json
@@ -340,19 +356,38 @@ Users only require first_name, last_name, email and password to create an accoun
 
 #### Request a password reset
 
-**POST:** `/api/v1/accounts/request-password` (NOT COMPLETE YET)
+**POST:** `/api/v1/accounts/request-password`
+
+**Notes:**
+- `login` can be any valid email address or 10 digit phone number. If an email is provided the user will receive an email, if a phone number is provided the user will receive a text.
 
 **Body:**
 ```json
 {
-    "email": "test@test.com",
+    "login": "test@test.com",
 }
 ```
 
-**Notes:**
-- `email` can be any valid email address. The reset code will be emailed to the user.
+**Response:**
+```json
+{
+    "detail": "A reset code has been sent to your email address."
+}
+```
 
-**Response:** None
+**Body:**
+```json
+{
+    "login": "1234567890",
+}
+```
+
+**Response:**
+```json
+{
+    "detail": "A reset code has been sent to your phone."
+}
+```
 
 **Status Codes:**
 - `200` if successful
@@ -362,7 +397,7 @@ Users only require first_name, last_name, email and password to create an accoun
 
 #### Reset a users password
 
-**POST:** `/api/v1/accounts/reset-password` (NOT COMPLETE YET)
+**POST:** `/api/v1/accounts/reset-password`
 
 **Body:**
 ```json
@@ -374,9 +409,28 @@ Users only require first_name, last_name, email and password to create an accoun
 
 **Notes:**
 - `password`: must be at least 8 chars with at least 1 number
-- `token`: verification token is a 20 character combinations of lowercase letters and digits
+- `token`: verification token is a 8 character combinations of lowercase letters and digits
 
-**Response:** None
+**Response:**
+```json
+{
+    "id": "085e8bbf-4430-4df8-9233-8269b52bd4bf",
+    "first_name": "Tom",
+    "last_name": "Brady",
+    "email": "bradytime@gmail.com",
+    "email_verified": true,
+    "email_notifications": true,
+    "phone": "1234567890",
+    "phone_verified": true,
+    "profile_image": "https://media.licdn.com/mpr/mpr/shrink_100_100/p/5/005/040/0cd/008cf89.jpg",
+    "is_active": false,
+    "email_pending": null,
+    "phone_pending": null,
+    "created": "2016-11-16T15:56:56.179930Z",
+    "updated": "2016-11-16T17:02:27.978451Z",
+    "token": "ccf66788480947c48e7c7a3eb168ee12"
+}
+```
 
 **Status Codes:**
 - `200` if successful
