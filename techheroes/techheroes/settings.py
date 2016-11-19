@@ -29,7 +29,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'timezone_field',
+    'bandit',
     'accounts',
     'authentication',
     'heroes',
@@ -126,18 +126,30 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+SERVER_EMAIL = 'Tech Heroes <notifications@techherosapp.com>'
+
+WEB_DOMAIN = os.getenv('WEB_DOMAIN', 'www.techheroesapp.com')
+
 AUTH_TOKEN_EXP_IN_DAYS = 7
 VERIFICATION_TOKEN_EXP_IN_DAYS = 7
 
-if TESTING:
-    EMAIL_HOST = "localhost"
-    EMAIL_PORT = "1025"
-    EMAIL_BACKEND = 'django.core.mail.backends.locmem.EmailBackend'
-else:
-    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+if DEBUG:
+    EMAIL_BACKEND = 'bandit.backends.smtp.HijackSMTPBackend'
     EMAIL_HOST = 'smtp.gmail.com'
-    EMAIL_PORT = 587
+    EMAIL_PORT = '587'
+    EMAIL_HOST_USER = 'test@techheroesapp.com'
+    EMAIL_HOST_PASSWORD = 'TechHeroes2016'
     EMAIL_USE_TLS = True
-    EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD', None)
-    EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER', None)
+    BANDIT_EMAIL = 'test+bandit@techheroesapp.com'
+else:
+    EMAIL_BACKEND = 'django_ses.SESBackend'
+
+# AWS configuration
+AWS_ACCESS_KEY = os.getenv('AWS_ACCESS_KEY')
+AWS_SECRET_KEY = os.getenv('AWS_SECRET_KEY')
+
+# Twilio configuration
+TWILIO_ACCOUNT_ID = os.getenv('TWILIO_ACCOUNT_ID')
+TWILIO_API_TOKEN = os.getenv('TWILIO_API_TOKEN')
+TWILIO_NUMBER = os.getenv('TWILIO_NUMBER')
 

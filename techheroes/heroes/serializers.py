@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from accounts.serializers import UserSerializer, UserWithTokenSerializer
+from accounts.serializers import LimitedUserSerializer, UserWithTokenSerializer
 
 from .models import Hero, HeroAcceptAction
 
@@ -28,7 +28,7 @@ class CreateUpdateHeroSerializer(serializers.Serializer):
 
 
 class HeroSerializer(serializers.ModelSerializer):
-    user = UserSerializer(many=False)
+    user = LimitedUserSerializer(many=False)
 
     class Meta:
         model = Hero

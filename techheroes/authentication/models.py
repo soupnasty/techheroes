@@ -64,7 +64,7 @@ class VerificationToken(models.Model):
     """
     This is an abstract model used to verify email and password tokens.
     """
-    TOKEN_LENGTH = 20
+    TOKEN_LENGTH = 10
 
     token = models.CharField(max_length=TOKEN_LENGTH, unique=True)
     timestamp = models.DateTimeField(auto_now_add=True)
@@ -99,13 +99,26 @@ class EmailToken(VerificationToken):
     email = models.EmailField(max_length=100)
 
     class Meta:
-        verbose_name = u'EmailToken'
-        verbose_name_plural = u'EmailTokens'
+        verbose_name = u'Email Verification Token'
+        verbose_name_plural = u'Email Verification Tokens'
+
+
+class PhoneToken(VerificationToken):
+    TOKEN_LENGTH = 6
+
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, related_name='phone_token')
+    phone = models.CharField(max_length=10)
+
+    class Meta:
+        verbose_name = u'Phone VerificationToken'
+        verbose_name_plural = u'Phone Verification Tokens'
 
 
 class PasswordToken(VerificationToken):
+    TOKEN_LENGTH = 8
+
     user = models.OneToOneField(settings.AUTH_USER_MODEL, related_name='password_token')
 
     class Meta:
-        verbose_name = u'PasswordToken'
-        verbose_name_plural = u'PasswordTokens'
+        verbose_name = u'Password Verification Token'
+        verbose_name_plural = u'Password Verification Tokens'

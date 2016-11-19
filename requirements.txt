@@ -12,7 +12,6 @@ psycopg2==2.6.2
 
 # Timezones
 pytz==2016.7
-django-timezone-field==2.0
 
 # Testing
 mock==2.0.0
@@ -20,10 +19,18 @@ factory-boy==2.7.0
 
 prospector==0.12.3
 bandit==1.1.0
+django-email-bandit==1.1
 
 pytest==3.0.3
 pytest-cov==2.4.0
 pytest-django==3.0.0
+
+# Amazon Web Services
+boto3==1.4.1
+django-ses==0.8.1
+
+# Twillio
+twilio==5.6.0
 
 # Production
 gunicorn==19.6.0
