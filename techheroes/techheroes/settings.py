@@ -133,7 +133,11 @@ WEB_DOMAIN = os.getenv('WEB_DOMAIN', 'www.techheroesapp.com')
 AUTH_TOKEN_EXP_IN_DAYS = 7
 VERIFICATION_TOKEN_EXP_IN_DAYS = 7
 
-if DEBUG:
+if TESTING:
+    EMAIL_HOST = "localhost"
+    EMAIL_PORT = "1025"
+    EMAIL_BACKEND = 'django.core.mail.backends.locmem.EmailBackend'
+elif DEBUG:
     EMAIL_BACKEND = 'bandit.backends.smtp.HijackSMTPBackend'
     EMAIL_HOST = 'smtp.gmail.com'
     EMAIL_PORT = '587'

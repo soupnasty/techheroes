@@ -52,7 +52,6 @@ class User(AbstractBaseUser):
     phone = models.CharField(max_length=10, unique=True, null=True)
     phone_verified = models.BooleanField(default=False)
     profile_image = models.URLField(blank=True, null=True)
-    has_app = models.BooleanField(default=False)
 
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
@@ -182,10 +181,7 @@ class User(AbstractBaseUser):
         else:
             raise InvalidTokenError('The supplied phone verification token was invalid.')
 
-    def request_password_reset(self, email=None, phone=None):
-        if not email and not phone:
-            raise ValueError('Must supply either a valid email address or phone number.')
-
+    def request_password_reset(self, email):
         if hasattr(self, 'password_token') and self.password_token.id is not None:
             self.password_token.delete()
 
@@ -193,16 +189,9 @@ class User(AbstractBaseUser):
         # TODO change this when email is ready
         url = 'https://{0}/reset-password/{1}'.format(settings.WEB_DOMAIN, password_token.token)
 
-        if email:
-            subject = 'Tech Heroes: Password reset request'
-            message = (
-                'A request has been made to reset the password for your Tech Heroes account.\n '
-                'Click the following link to change your password: {0}'.format(url))
-            self.send_email(subject, message)
+        subject = 'Tech Heroes: Password reset request'
+        message = (
+            'A request has been made to reset the password for your Tech Heroes account.\n '
+            'Click the following link to change your password: {0}'.format(url))
+        self.send_email(subject, message)
 
-        else:
-            message = (
-                'A request has been made to reset the password for your Tech Heroes account. '
-                'You can enter the following token in the Tech Heroes app to change your password.\n'
-                'Token: {0}'.format(password_token.token))
-            self.send_sms(message)

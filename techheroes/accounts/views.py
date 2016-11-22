@@ -48,11 +48,6 @@ class LoginUserView(GenericAPIView):
             error = {'detail': 'Password is incorrect.'}
             return Response(error, status=status.HTTP_403_FORBIDDEN)
 
-        platform = data.validated_data.get('platform', None)
-        if platform == 'mobile' and not user.has_app:
-            user.has_app = True
-            user.save()
-
         user.login()
         serializer = UserWithTokenSerializer(user)
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -149,37 +144,10 @@ class RequestPasswordUserView(GenericAPIView):
         data = self.serializer_class(data=request.data)
         data.is_valid(raise_exception=True)
 
-        if is_email(data.validated_data['login']):
-            try:
-                user = User.objects.get(email__iexact=data.validated_data['login'])
-            except User.DoesNotExist:
-                return Response(
-                    {'detail': 'A valid user could not be found with the email provided.'},
-                    status=status.HTTP_404_NOT_FOUND)
-
-            user.request_password_reset(email=user.email)
-
-            return Response(
-                {'detail': 'A reset token has been sent to your email address.'},
-                status=status.HTTP_200_OK)
-
-        if is_phone(data.validated_data['login']):
-            try:
-                user = User.objects.get(phone=data.validated_data['login'])
-            except User.DoesNotExist:
-                return Response(
-                    {'detail': 'A valid user could not be found with the provided phone number.'},
-                    status=status.HTTP_404_NOT_FOUND)
-
-            user.request_password_reset(phone=user.phone)
-
-            return Response(
-                {'detail': 'A reset token has been sent to your phone.'},
-                status=status.HTTP_200_OK)
-
-        return Response(
-            {'detail': 'You must provide a valid email address or phone number.'},
-            status=status.HTTP_400_BAD_REQUEST)
+        user = User.objects.get(email=data.validated_data['email'])
+        user.request_password_reset(user.email)
+        result = {'detail': 'A reset token has been sent to your email address.'}
+        return Response(result, status=status.HTTP_200_OK)
 
 
 class ResetPasswordUserView(GenericAPIView):
