@@ -1,3 +1,4 @@
+from django.db import IntegrityError
 from rest_framework import status, generics
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.permissions import AllowAny
@@ -9,7 +10,7 @@ from utils.mixins import AtomicMixin
 
 from .models import Hero, HeroAcceptAction
 from .permissions import IsHeroOrStaff
-from .serializers import (CreateUpdateHeroSerializer, HeroWithTokenSerializer, AcceptDeclineHeroSerializer,
+from .serializers import (CreateUpdateHeroSerializer, HeroDetailSerializer, AcceptDeclineHeroSerializer,
     HeroAcceptActionSerializer, HeroSerializer)
 
 
@@ -23,13 +24,18 @@ class ApplyForHeroView(AtomicMixin, generics.GenericAPIView):
         data = self.serializer_class(data=request.data)
         data.is_valid(raise_exception=True)
 
-        new_hero = Hero.objects.create(user=request.user, **data.validated_data)
-        serializer = HeroWithTokenSerializer(new_hero)
+        try:
+            new_hero = Hero.objects.create(user=request.user, **data.validated_data)
+        except IntegrityError:
+            error = {'detail': 'User has already applied to become a Hero.'}
+            return Response(error, status=status.HTTP_409_CONFLICT)
+
+        serializer = HeroSerializer(new_hero)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
 class RetrieveUpdateHeroView(generics.RetrieveUpdateAPIView):
-    serializer_class = HeroWithTokenSerializer
+    serializer_class = HeroDetailSerializer
 
     def get_object(self):
         if self.request.user.is_hero():
@@ -46,7 +52,7 @@ class RetrieveUpdateHeroView(generics.RetrieveUpdateAPIView):
             setattr(hero, key, value)
 
         hero.save()
-        serializer = HeroWithTokenSerializer(hero)
+        serializer = self.serializer_class(hero)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 

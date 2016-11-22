@@ -459,7 +459,7 @@ After creating a user account and verifying their email, a user can apply to be 
 - `discipline`: choices are FE (front end), BE (back end), IO (iOS), AN (Android) and UX (UX design)
 - `short_bio`: A very short bio of the individual (less than 200 characters)
 - `resume`: A text field that holds a summary of the Hero's resume
-- `years_of_exp`: The Hero's total years of experience
+- `years_of_exp`: The Hero's total years of experience. `years_of_exp` must be greater than or equal to all of the skill years.
 - `rate_in_cents`: The Hero's rate in cents per minute. 1000 -> 10$/min
 - `linkedin_url`: LinkedIn url for the user
 - `skills`: JSON object of user's skills (3 required)
@@ -472,16 +472,7 @@ After creating a user account and verifying their email, a user can apply to be 
         "id": "085e8bbf-4430-4df8-9233-8269b52bd4bf",
         "first_name": "Tom",
         "last_name": "Brady",
-        "email": "bradytime@gmail.com",
-        "email_verified": false,
-        "email_notifications": false,
-        "phone": "1234567890",
-        "phone_verified": false,
-        "profile_image": "https://media.licdn.com/mpr/mpr/shrink_100_100/p/5/005/040/0cd/008cf89.jpg",
-        "is_active": false,
-        "created": "2016-11-16T15:56:56.179930Z",
-        "updated": "2016-11-16T17:05:00.423756Z",
-        "token": "ccf66788480947c48e7c7a3eb168ee12"
+        "created": "2016-11-16T15:56:56.179930Z"
     },
     "discipline": "BE",
     "short_bio": "I am an awesome backend engineer!",
@@ -537,9 +528,10 @@ After creating a user account and verifying their email, a user can apply to be 
         "phone_verified": false,
         "profile_image": "https://media.licdn.com/mpr/mpr/shrink_100_100/p/5/005/040/0cd/008cf89.jpg",
         "is_active": false,
+        "email_pending": null,
+        "phone_pending": null,
         "created": "2016-11-16T15:56:56.179930Z",
-        "updated": "2016-11-16T17:05:00.423756Z",
-        "token": "ccf66788480947c48e7c7a3eb168ee12"
+        "updated": "2016-11-16T17:05:00.423756Z"
     },
     "discipline": "BE",
     "short_bio": "I am an awesome backend engineer!",
@@ -619,9 +611,10 @@ After creating a user account and verifying their email, a user can apply to be 
       "phone_verified": false,
       "profile_image": "https://media.licdn.com/mpr/mpr/shrink_100_100/p/5/005/040/0cd/008cf89.jpg",
       "is_active": false,
+      "email_pending": null,
+      "phone_pending": null,
       "created": "2016-11-16T15:56:56.179930Z",
-      "updated": "2016-11-16T17:05:00.423756Z",
-      "token": "ccf66788480947c48e7c7a3eb168ee12"
+      "updated": "2016-11-16T17:05:00.423756Z"
     },
     "discipline": "UX",
     "short_bio": "I switched to UX",

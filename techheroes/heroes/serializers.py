@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from accounts.serializers import LimitedUserSerializer, UserWithTokenSerializer
+from accounts.serializers import LimitedUserSerializer, UserSerializer
 
 from .models import Hero, HeroAcceptAction
 
@@ -26,6 +26,12 @@ class CreateUpdateHeroSerializer(serializers.Serializer):
             raise serializers.ValidationError('Discipline must be in {}'.format(disciplines))
         return value
 
+    def validate(self, data):
+        max_skill = max(data['skills'], key=lambda x: x['years'])
+        if data['years_of_exp'] < max_skill['years']:
+            raise serializers.ValidationError('Total years of experience must be greater than or equal to any skill years')
+        return data
+
 
 class HeroSerializer(serializers.ModelSerializer):
     user = LimitedUserSerializer(many=False)
@@ -33,17 +39,17 @@ class HeroSerializer(serializers.ModelSerializer):
     class Meta:
         model = Hero
         fields = ('id', 'user', 'discipline', 'short_bio', 'resume', 'years_of_exp',
-                        'rate_in_cents', 'skills', 'linkedin_url', 'created')
+                        'rate_in_cents', 'skills', 'accepted', 'linkedin_url', 'created', 'updated')
+        read_only_fields = ('id', 'accepted', 'created', 'updated')
 
 
-class HeroWithTokenSerializer(serializers.ModelSerializer):
-    user = UserWithTokenSerializer(many=False)
+class HeroDetailSerializer(HeroSerializer):
+    user = UserSerializer(many=False)
 
     class Meta:
         model = Hero
         fields = ('id', 'user', 'discipline', 'short_bio', 'resume', 'years_of_exp',
                     'rate_in_cents', 'skills', 'accepted', 'linkedin_url', 'created', 'updated')
-        read_only_fields = ('accepted', 'created', 'updated')
 
 
 class AcceptDeclineHeroSerializer(serializers.Serializer):

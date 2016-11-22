@@ -24,7 +24,7 @@ class UserManager(BaseUserManager):
                             is_staff=is_staff, is_active=True, **extra_fields)
         user.set_password(password)
         user.save(using=self._db)
-        user.send_registration_email(user.email)
+        user.send_registration_email(user.email) 
 
         AuthToken.objects.create(user=user)
         return user
