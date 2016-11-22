@@ -52,6 +52,10 @@ There are a few configurations managed as environment variables. In the developm
 - [Accept Hero](#accept-hero)
 - [Decline Hero](#decline-hero)
 - [Get Hero list](#get-hero-list)
+- [Retrieve Hero detail](#retrieve-hero-detail)
+
+#### Call Request Routes
+- [Create a Hero request](#get-hero-list)
 
 
 ## API Routes
@@ -114,12 +118,8 @@ Users only require first_name, last_name, email and password to create an accoun
 {
     "email": "test@test.com",
     "password": "password1",
-    "platform": "mobile"
 }
 ```
-
-**Notes:**
-- `platform`: this is an optional field and valid choices are `web` and `mobile`
 
 **Response:**
 ```json
@@ -181,8 +181,7 @@ Users only require first_name, last_name, email and password to create an accoun
     "email_pending": "test@test.com",
     "phone_pending": null,
     "created": "2016-11-16T15:56:56.179930Z",
-    "updated": "2016-11-16T15:59:09.189275Z",
-    "token": "ccf66788480947c48e7c7a3eb168ee12"
+    "updated": "2016-11-16T15:59:09.189275Z"
 }
 ```
 
@@ -233,8 +232,7 @@ Users only require first_name, last_name, email and password to create an accoun
     "email_pending": "test@test.com",
     "phone_pending": "1234567890",
     "created": "2016-11-16T15:56:56.179930Z",
-    "updated": "2016-11-16T17:02:27.978451Z",
-    "token": "ccf66788480947c48e7c7a3eb168ee12"
+    "updated": "2016-11-16T17:02:27.978451Z"
 }
 ```
 
@@ -275,8 +273,7 @@ Users only require first_name, last_name, email and password to create an accoun
     "email_pending": null,
     "phone_pending": "1234567890",
     "created": "2016-11-16T15:56:56.179930Z",
-    "updated": "2016-11-16T17:02:27.978451Z",
-    "token": "ccf66788480947c48e7c7a3eb168ee12"
+    "updated": "2016-11-16T17:02:27.978451Z"
 }
 ```
 
@@ -318,8 +315,7 @@ Users only require first_name, last_name, email and password to create an accoun
     "email_pending": null,
     "phone_pending": null,
     "created": "2016-11-16T15:56:56.179930Z",
-    "updated": "2016-11-16T17:02:27.978451Z",
-    "token": "ccf66788480947c48e7c7a3eb168ee12"
+    "updated": "2016-11-16T17:02:27.978451Z"
 }
 ```
 
@@ -359,12 +355,12 @@ Users only require first_name, last_name, email and password to create an accoun
 **POST:** `/api/v1/accounts/request-password`
 
 **Notes:**
-- `login` can be any valid email address or 10 digit phone number. If an email is provided the user will receive an email, if a phone number is provided the user will receive a text.
+- `email`: a valid email address. The user's `email_verified` must be true.
 
 **Body:**
 ```json
 {
-    "login": "test@test.com",
+    "email": "test@test.com",
 }
 ```
 
@@ -375,24 +371,10 @@ Users only require first_name, last_name, email and password to create an accoun
 }
 ```
 
-**Body:**
-```json
-{
-    "login": "1234567890",
-}
-```
-
-**Response:**
-```json
-{
-    "detail": "A reset code has been sent to your phone."
-}
-```
-
 **Status Codes:**
 - `200` if successful
 - `400` is bad data is sent
-- `404` if the email is not found
+- `404` if the email or phone is not found
 
 
 #### Reset a users password
@@ -402,14 +384,15 @@ Users only require first_name, last_name, email and password to create an accoun
 **Body:**
 ```json
 {
-    "token": "12dfg2wer6a342g23456",
+    "token": "12dfg2we",
     "new_password": "newpass1"
 }
 ```
 
 **Notes:**
-- `password`: must be at least 8 chars with at least 1 number
+- This route resets a user's password and logs them in
 - `token`: verification token is a 8 character combinations of lowercase letters and digits
+- `new_password`: must be at least 8 chars with at least 1 number
 
 **Response:**
 ```json
@@ -435,7 +418,7 @@ Users only require first_name, last_name, email and password to create an accoun
 **Status Codes:**
 - `200` if successful
 - `400` is bad data is sent
-- `404` if the token is invalid or expired
+- `404` if the password token is invalid or expired
 
 
 ### Hero Routes
@@ -815,3 +798,100 @@ After creating a user account and verifying their email, a user can apply to be 
 
 **Status Codes:**
 - `200` if successful
+
+
+#### Retrieve Hero detail
+
+**GET:** `/api/v1/heroes/:hero_id`
+
+**Notes:**
+- This retrieves the hero's details that the user can see.
+- This route is allowed by an anon user
+
+**Response:**
+```json
+{
+   "id": "b55dcf4a-e723-495e-b920-738c4b6d221d",
+    "user": {
+      "id": "085e8bbf-4430-4df8-9233-8269b52bd4bf",
+      "first_name": "Tom",
+      "last_name": "Brady",
+      "email": "bradytime@gmail.com",
+      "profile_image": "https://media.licdn.com/mpr/mpr/shrink_100_100/p/5/005/040/0cd/008cf89.jpg",
+      "created": "2016-11-16T15:56:56.179930Z"
+    },
+    "discipline": "UX",
+    "short_bio": "I switched to UX",
+    "resume": "This is my resume",
+    "years_of_exp": 1,
+    "rate_in_cents": 0,
+    "skills": [
+      {
+        "name": "Photoshop",
+        "years": 1
+      },
+      {
+        "name": "Lightroom",
+        "years": 1
+      },
+      {
+        "name": "HTML",
+        "years": 1
+      }
+    ],
+    "linkedin_url": "http://www.django-rest-framework.org",
+    "created": "2016-11-16T16:05:36.716298Z",
+}
+```
+
+**Status Codes:**
+- `200` if successful
+- `404` if hero with provided id is not found
+
+
+### Call Request Routes
+Call requests are what users make to any hero they desire. The user has to have a verified email and verified phone before they can make a call request.
+
+#### Create a call request
+
+**POST:** `/api/v1/call-request/`
+
+**Body:**
+```json
+{
+  	"hero_id":"b55dcf4a-e723-495e-b920-738c4b6d221d",
+    "message": "This is a general summary or reason for the call",
+    "estimated_length": 15,
+    "datetime_one": "2016-11-17T22:06:00.000000Z",
+    "datetime_two": "2016-11-17T22:06:15.000000Z",
+    "datetime_three": "2016-11-17T22:06:30.000000Z"
+}
+```
+
+**Notes:**
+- `hero_id`: the hero's id (UUID)
+- `message`: a summary or reason for the call
+- `estimated_length`: the approximate time for the call in minutes
+- `datetime_one`, `datetime_two` and `datetime_three` are UTC datetimes the user suggested for the call
+
+**Response:**
+```json
+{
+    "id": 1,
+    "user": "fd6494d8-e684-4f4b-960c-c83f56d1d790",
+    "hero": "b55dcf4a-e723-495e-b920-738c4b6d221d",
+    "message": "This is a general summary or reason for the call",
+    "estimated_length": 15,
+    "datetime_one": "2016-11-17T22:06:00.000000Z",
+    "datetime_two": "2016-11-17T22:06:15.000000Z",
+    "datetime_three": "2016-11-17T22:06:30.000000Z",
+    "expired": false,
+    "created": "2016-11-17T22:06:50.108634Z"
+}
+```
+
+**Status Codes:**
+- `200` if successful
+- `400` if incorrect data is provided
+- `403` if the user is not staff
+
