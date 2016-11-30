@@ -429,6 +429,7 @@ After creating a user account and verifying their email, a user can apply to be 
 **POST:** `/api/v1/heroes/apply`
 
 **Notes:**
+- When a hero applies, each staff member will be sent an email with a link to the hero verification page
 - `discipline`: choices are FE (front end), BE (back end), IO (iOS), AN (Android)
 - `short_bio`: A very short bio of the individual (less than 200 characters)
 - `years_of_exp`: The Hero's total years of experience. `years_of_exp` must be greater than or equal to all of the skill years.

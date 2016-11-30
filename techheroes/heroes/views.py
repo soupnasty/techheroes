@@ -25,7 +25,7 @@ class ApplyForHeroView(AtomicMixin, generics.GenericAPIView):
         data.is_valid(raise_exception=True)
 
         try:
-            new_hero = Hero.objects.create(user=request.user, **data.validated_data)
+            new_hero = Hero.objects.create_hero(user=request.user, data=data.validated_data)
         except IntegrityError:
             error = {'detail': 'User has already applied to become a Hero.'}
             return Response(error, status=status.HTTP_409_CONFLICT)

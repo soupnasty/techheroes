@@ -9,6 +9,17 @@ from django.utils import timezone
 from accounts.models import User
 
 
+class HeroManager(models.Manager):
+    def create_hero(self, user, data):
+        hero = self.create(user=user, **data)
+        # Alert staff through email upon Hero creation
+        staff = User.objects.filter(is_staff=True)
+        for user in staff:
+            user.send_new_hero_alert(hero)
+
+        return hero
+
+
 class Hero(models.Model):
     FRONT_END = 'FE'
     BACK_END = 'BE'
@@ -38,6 +49,8 @@ class Hero(models.Model):
 
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
+
+    objects = HeroManager()
 
     def __str__(self):
         return self.user.email

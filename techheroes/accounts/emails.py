@@ -16,6 +16,7 @@ def get_email(context):
         'new_user_registered': lambda: new_user_registered_email(context),
         'password_reset': lambda: password_reset_email(context),
         'verify_email': lambda: verify_email(context),
+        'new_hero_application': lambda: new_hero_application(context)
     }
 
     return messages.get(context['type'], lambda: email_error(context))()
@@ -97,6 +98,30 @@ def verify_email(context):
     }
 
     subject = 'Tech Heroes Email Verification'
+    text = render_to_string(TEXT_TEMPLATE, email_context)
+    html = render_to_string(HTML_TEMPLATE, email_context)
+
+    return subject, text, html
+
+
+def new_hero_application(context):
+    hero_name = context['hero_name']
+    link = context['link']
+
+    text_graf = ('{0} has applied to be a hero! '.format(hero_name))
+    html_graf = mark_safe('<p>{0}</p>'.format(escape(text_graf)))
+
+    email_context = {
+        'header': 'Hello Tech Heroes Staff!',
+        'text_content': text_graf,
+        'html_content': html_graf,
+        'cta': 'Accept or decline Hero application',
+        'cta_link': link,
+        'static_host': settings.WEB_DOMAIN,
+        'opt_out_url': USER_OPT_OUT_URL,
+    }
+
+    subject = 'New Hero Application: {}'.format(hero_name)
     text = render_to_string(TEXT_TEMPLATE, email_context)
     html = render_to_string(HTML_TEMPLATE, email_context)
 

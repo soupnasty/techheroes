@@ -24,7 +24,7 @@ class UserManager(BaseUserManager):
                             is_staff=is_staff, is_active=True, **extra_fields)
         user.set_password(password)
         user.save(using=self._db)
-        user.send_registration_email(user.email) 
+        user.send_registration_email(user.email)
 
         AuthToken.objects.create(user=user)
         return user
@@ -187,11 +187,25 @@ class User(AbstractBaseUser):
 
         password_token = PasswordToken.objects.create(user=self)
         # TODO change this when email is ready
-        url = 'https://{0}/reset-password/{1}'.format(settings.WEB_DOMAIN, password_token.token)
+        link = 'https://{0}/reset-password/{1}'.format(settings.WEB_DOMAIN, password_token.token)
 
         subject = 'Tech Heroes: Password reset request'
         message = (
             'A request has been made to reset the password for your Tech Heroes account.\n '
-            'Click the following link to change your password: {0}'.format(url))
+            'Click the following link to change your password: {0}'.format(link))
         self.send_email(subject, message)
+
+    def send_new_hero_alert(self, hero):
+        """This route is for staff users only, alert staff upon new hero application"""
+        if not self.is_staff:
+            return
+
+        # TODO change this when email is ready
+        link = 'https://{0}/accept-decline-hero/{1}'.format(settings.WEB_DOMAIN, hero.id)
+        context = {'hero_name': hero.user.get_full_name(), 'link': link, 'type': 'new_hero_application'}
+
+        subject, text, html = get_email(context)
+        self.send_email(subject, text, html=html, email=self.email)
+
+
 
