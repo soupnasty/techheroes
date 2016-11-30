@@ -454,7 +454,7 @@ After creating a user account and verifying their email, a user can apply to be 
 **Response:**
 ```json
 {
-    "id": "b55dcf4a-e723-495e-b920-738c4b6d221d",
+    "id": 1,
     "user": {
         "id": "085e8bbf-4430-4df8-9233-8269b52bd4bf",
         "first_name": "Tom",
@@ -487,7 +487,7 @@ After creating a user account and verifying their email, a user can apply to be 
 **Response:**
 ```json
 {
-    "id": "b55dcf4a-e723-495e-b920-738c4b6d221d",
+    "id": 1,
     "user": {
         "id": "085e8bbf-4430-4df8-9233-8269b52bd4bf",
         "first_name": "Tom",
@@ -543,7 +543,7 @@ After creating a user account and verifying their email, a user can apply to be 
 **Response:**
 ```json
 {
-   "id": "b55dcf4a-e723-495e-b920-738c4b6d221d",
+   "id": 1,
     "user": {
       "id": "085e8bbf-4430-4df8-9233-8269b52bd4bf",
       "first_name": "Tom",
@@ -621,7 +621,7 @@ After creating a user account and verifying their email, a user can apply to be 
 **Body:**
 ```json
 {
-  	"hero_id":"b55dcf4a-e723-495e-b920-738c4b6d221d"
+  	"hero_id": 1
 }
 ```
 
@@ -629,7 +629,7 @@ After creating a user account and verifying their email, a user can apply to be 
 ```json
 {
     "user": "fd6494d8-e684-4f4b-960c-c83f56d1d790",
-    "hero": "b55dcf4a-e723-495e-b920-738c4b6d221d",
+    "hero": 1,
     "accepted": false,
     "timestamp": "2016-11-17T22:06:50.108634Z"
 }
@@ -657,7 +657,7 @@ After creating a user account and verifying their email, a user can apply to be 
   "previous": null,
   "results": [
     {
-      "id": "ab8996b5-edd5-40d0-bc90-ed8b578df9d5",
+      "id": 1,
       "user": {
         "id": "878d0570-4763-41f9-b122-bc46e444d62d",
         "first_name": "Clark",
@@ -674,7 +674,7 @@ After creating a user account and verifying their email, a user can apply to be 
       "updated": "2016-11-30T02:46:51.584685Z"
     },
     {
-      "id": "b55dcf4a-e723-495e-b920-738c4b6d221d",
+      "id": 2,
       "user": {
         "id": "7ee66bfc-02a6-42ac-a488-affd5105d5a1",
         "first_name": "Tech",
@@ -709,7 +709,7 @@ After creating a user account and verifying their email, a user can apply to be 
 **Response:**
 ```json
 {
-   "id": "b55dcf4a-e723-495e-b920-738c4b6d221d",
+   "id": 1,
     "user": {
       "id": "085e8bbf-4430-4df8-9233-8269b52bd4bf",
       "first_name": "Tom",
