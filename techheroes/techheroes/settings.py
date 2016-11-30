@@ -128,7 +128,7 @@ STATIC_URL = '/static/'
 
 SERVER_EMAIL = 'Tech Heroes <notifications@techherosapp.com>'
 
-WEB_DOMAIN = os.getenv('WEB_DOMAIN', 'www.techheroesapp.com')
+WEB_DOMAIN = os.getenv('WEB_DOMAIN', 'www.techheroes.xyz')
 
 AUTH_TOKEN_EXP_IN_DAYS = 7
 VERIFICATION_TOKEN_EXP_IN_DAYS = 7
@@ -141,10 +141,10 @@ elif DEBUG:
     EMAIL_BACKEND = 'bandit.backends.smtp.HijackSMTPBackend'
     EMAIL_HOST = 'smtp.gmail.com'
     EMAIL_PORT = '587'
-    EMAIL_HOST_USER = 'test@techheroesapp.com'
+    EMAIL_HOST_USER = 'test@techheroes.xyz'
     EMAIL_HOST_PASSWORD = 'TechHeroes2016'
     EMAIL_USE_TLS = True
-    BANDIT_EMAIL = 'test+bandit@techheroesapp.com'
+    BANDIT_EMAIL = 'test+bandit@techheroes.xyz'
 else:
     EMAIL_BACKEND = 'django_ses.SESBackend'
 

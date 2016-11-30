@@ -52,7 +52,7 @@ There are a few configurations managed as environment variables. In the developm
 - [Accept Hero](#accept-hero)
 - [Decline Hero](#decline-hero)
 - [Get Hero list](#get-hero-list)
-- [Retrieve Hero detail](#retrieve-hero-detail)
+- [Get Hero detail](#get-hero-detail)
 
 #### Call Request Routes
 - [Create a Hero request](#get-hero-list)
@@ -68,6 +68,10 @@ Users only require first_name, last_name, email and password to create an accoun
 
 **POST:** `/api/v1/accounts/register`
 
+**Notes:**
+- `email`: user's email address, must be unique (string)
+- `password`: must be at least 8 chars with at least 1 number (string)
+
 **Body:**
 ```json
 {
@@ -77,10 +81,6 @@ Users only require first_name, last_name, email and password to create an accoun
     "password": "password1"
 }
 ```
-
-**Notes:**
-- `email`: user's email address, must be unique (string)
-- `password`: must be at least 8 chars with at least 1 number (string)
 
 **Response:**
 ```json
@@ -195,6 +195,14 @@ Users only require first_name, last_name, email and password to create an accoun
 
 **PATCH:** `/api/v1/accounts/profile`
 
+**Notes:**
+- `phone`: A ten-digit US phone number as string
+- When a user updates `email`, the user will receive a verification email. `email_verified` will remain false and `email` will remain their old email until the user verifies their email token.
+- `email_pending`: this is the email that is awaiting to be saved for the user once they verify
+- When a user updates `phone`, the user will receive a verification text. `phone_verified` will remain false and `phone` will remain null until the user verifies their phone token.
+- `phone_pending`: this is the phone number that is awaiting to be saved for the user once they verify
+- `profile_image` is a image url link
+
 **Body:**
 ```json
 {
@@ -207,14 +215,6 @@ Users only require first_name, last_name, email and password to create an accoun
     "profile_image": "https://media.licdn.com/mpr/mpr/shrink_100_100/p/5/005/040/0cd/008cf89.jpg"
 }
 ```
-
-**Notes:**
-- `phone`: A ten-digit US phone number as string
-- When a user updates `email`, the user will receive a verification email. `email_verified` will remain false and `email` will remain their old email until the user verifies their email token.
-- `email_pending`: this is the email that is awaiting to be saved for the user once they verify
-- When a user updates `phone`, the user will receive a verification text. `phone_verified` will remain false and `phone` will remain null until the user verifies their phone token.
-- `phone_pending`: this is the phone number that is awaiting to be saved for the user once they verify
-- `profile_image` is a image url link
 
 **Response:**
 ```json
@@ -246,16 +246,16 @@ Users only require first_name, last_name, email and password to create an accoun
 
 **POST:** `/api/v1/accounts/verify-email`
 
+**Notes:**
+- `token`: Email verification tokens are 10 character combinations of lowercase letters and digits
+- Once the email is verified `email_pending` becomes null and `email_verified` becomes true
+
 **Body:**
 ```json
 {
     "token": "12dfg2wer6",
 }
 ```
-
-**Notes:**
-- `token`: Email verification tokens are 10 character combinations of lowercase letters and digits
-- Once the email is verified `email_pending` becomes null and `email_verified` becomes true
 
 **Response:**
 ```json
@@ -288,16 +288,16 @@ Users only require first_name, last_name, email and password to create an accoun
 
 **POST:** `/api/v1/accounts/verify-phone`
 
+**Notes:**
+- `token`: Phone verification tokens are 6 character combinations of lowercase letters and digits
+- Once the phone is verified `phone_pending` becomes null and `phone_verified` becomes true
+
 **Body:**
 ```json
 {
     "token": "abc123",
 }
 ```
-
-**Notes:**
-- `token`: Phone verification tokens are 6 character combinations of lowercase letters and digits
-- Once the phone is verified `phone_pending` becomes null and `phone_verified` becomes true
 
 **Response:**
 ```json
@@ -330,6 +330,10 @@ Users only require first_name, last_name, email and password to create an accoun
 
 **POST:** `/api/v1/accounts/change-password`
 
+**Notes:**
+- `old_password`: must be at least 8 chars with at least 1 number
+- `new_password`: must be at least 8 chars with at least 1 number
+
 **Body:**
 ```json
 {
@@ -337,10 +341,6 @@ Users only require first_name, last_name, email and password to create an accoun
     "new_password": "newpass1"
 }
 ```
-
-**Notes:**
-- `old_password`: must be at least 8 chars with at least 1 number
-- `new_password`: must be at least 8 chars with at least 1 number
 
 **Response:** None
 
@@ -381,6 +381,11 @@ Users only require first_name, last_name, email and password to create an accoun
 
 **POST:** `/api/v1/accounts/reset-password`
 
+**Notes:**
+- This route resets a user's password and logs them in
+- `token`: verification token is a 8 character combinations of lowercase letters and digits
+- `new_password`: must be at least 8 chars with at least 1 number
+
 **Body:**
 ```json
 {
@@ -388,11 +393,6 @@ Users only require first_name, last_name, email and password to create an accoun
     "new_password": "newpass1"
 }
 ```
-
-**Notes:**
-- This route resets a user's password and logs them in
-- `token`: verification token is a 8 character combinations of lowercase letters and digits
-- `new_password`: must be at least 8 chars with at least 1 number
 
 **Response:**
 ```json
@@ -428,41 +428,28 @@ After creating a user account and verifying their email, a user can apply to be 
 
 **POST:** `/api/v1/heroes/apply`
 
+**Notes:**
+- `discipline`: choices are FE (front end), BE (back end), IO (iOS), AN (Android)
+- `short_bio`: A very short bio of the individual (less than 200 characters)
+- `years_of_exp`: The Hero's total years of experience. `years_of_exp` must be greater than or equal to all of the skill years.
+- `rate_in_cents`: The Hero's rate in cents per minute. 1000 -> 10$/min
+- `linkedin_url`: LinkedIn url for the user
+
 **Body:**
 ```json
 {
   	"discipline": "BE",
-  	"short_bio": "I am an awesome backend engineer!",
-  	"resume": "This is my resume",
+  	"title": "Set up a production level REST API with Django",
+    "description": "This a further description of how I can help you with REST APIs with Django",
+  	"short_bio": "This is short summary of myself",
   	"years_of_exp": 3,
   	"rate_in_cents": 100,
   	"linkedin_url": "http://www.django-rest-framework.org",
-  	"skills": [
-  		{
-  			"name": "Python",
-  			"years": 2
-  		},
-  		{
-  			"name": "Django",
-  			"years": 2
-  		},
-  		{
-  			"name": "ReactJS",
-  			"years": 2
-
-  		}
-  	]
 }
 ```
 
 **Notes:**
-- `discipline`: choices are FE (front end), BE (back end), IO (iOS), AN (Android) and UX (UX design)
-- `short_bio`: A very short bio of the individual (less than 200 characters)
-- `resume`: A text field that holds a summary of the Hero's resume
-- `years_of_exp`: The Hero's total years of experience. `years_of_exp` must be greater than or equal to all of the skill years.
-- `rate_in_cents`: The Hero's rate in cents per minute. 1000 -> 10$/min
-- `linkedin_url`: LinkedIn url for the user
-- `skills`: JSON object of user's skills (3 required)
+- `accepted`: This is if the Hero has been accepted by staff, defaults to False
 
 **Response:**
 ```json
@@ -472,36 +459,20 @@ After creating a user account and verifying their email, a user can apply to be 
         "id": "085e8bbf-4430-4df8-9233-8269b52bd4bf",
         "first_name": "Tom",
         "last_name": "Brady",
+        "profile_image": null,
         "created": "2016-11-16T15:56:56.179930Z"
     },
     "discipline": "BE",
-    "short_bio": "I am an awesome backend engineer!",
-    "resume": "This is my resume",
+    "title": "Set up a production level REST API with Django",
+    "description": "This a further description of how I can help you with REST APIs with Django",
+  	"short_bio": "This is short summary of myself",
     "years_of_exp": 3,
     "rate_in_cents": 100,
-    "skills": [
-      {
-        "name": "Python",
-        "years": 2
-      },
-      {
-        "name": "Django",
-        "years": 2
-      },
-      {
-        "name": "ReactJS",
-        "years": 2
-      }
-    ],
     "accepted": false,
-    "linkedin_url": "http://www.django-rest-framework.org",
     "created": "2016-11-16T16:05:36.716298Z",
     "updated": "2016-11-16T18:44:27.964276Z"
 }
 ```
-
-**Notes:**
-- `accepted`: This is if the Hero has been accepted by staff, defaults to False
 
 **Status Codes:**
 - `201` if successfully created
@@ -534,24 +505,11 @@ After creating a user account and verifying their email, a user can apply to be 
         "updated": "2016-11-16T17:05:00.423756Z"
     },
     "discipline": "BE",
-    "short_bio": "I am an awesome backend engineer!",
-    "resume": "This is my resume",
+    "title": "Set up a production level REST API with Django",
+    "description": "This a further description of how I can help you with REST APIs with Django",
+  	"short_bio": "This is short summary of myself",
     "years_of_exp": 3,
     "rate_in_cents": 100,
-    "skills": [
-      {
-        "name": "Python",
-        "years": 2
-      },
-      {
-        "name": "Django",
-        "years": 2
-      },
-      {
-        "name": "ReactJS",
-        "years": 2
-      }
-    ],
     "accepted": false,
     "linkedin_url": "http://www.django-rest-framework.org",
     "created": "2016-11-16T16:05:36.716298Z",
@@ -572,27 +530,13 @@ After creating a user account and verifying their email, a user can apply to be 
 **Body:**
 ```json
 {
-  	"discipline": "UX",
-  	"short_bio": "I switched to UX",
-  	"resume": "This is my resume",
+  	"discipline": "FE",
+    "title": "Set up a ReactJS sight",
+    "description": "This a further description of how I can help you with ReactJS",
+  	"short_bio": "This is short summary of myself",
   	"years_of_exp": 1,
   	"rate_in_cents": 0,
-  	"linkedin_url": "http://www.django-rest-framework.org",
-  	"skills": [
-  		{
-  			"name": "Photoshop",
-  			"years": 1
-  		},
-  		{
-  			"name": "Lightroom",
-  			"years": 1
-  		},
-  		{
-  			"name": "HTML",
-  			"years": 1
-
-  		}
-  	]
+  	"linkedin_url": "http://www.django-rest-framework.org"
 }
 ```
 
@@ -616,25 +560,12 @@ After creating a user account and verifying their email, a user can apply to be 
       "created": "2016-11-16T15:56:56.179930Z",
       "updated": "2016-11-16T17:05:00.423756Z"
     },
-    "discipline": "UX",
-    "short_bio": "I switched to UX",
-    "resume": "This is my resume",
+    "discipline": "FE",
+    "title": "Set up a ReactJS sight",
+    "description": "This a further description of how I can help you with ReactJS",
+  	"short_bio": "This is short summary of myself",
     "years_of_exp": 1,
     "rate_in_cents": 0,
-    "skills": [
-      {
-        "name": "Photoshop",
-        "years": 1
-      },
-      {
-        "name": "Lightroom",
-        "years": 1
-      },
-      {
-        "name": "HTML",
-        "years": 1
-      }
-    ],
     "accepted": false,
     "linkedin_url": "http://www.django-rest-framework.org",
     "created": "2016-11-16T16:05:36.716298Z",
@@ -652,16 +583,16 @@ After creating a user account and verifying their email, a user can apply to be 
 
 **POST:** `/api/v1/heroes/accept`
 
+**Notes:**
+- `hero_id`: the hero's id (UUID)
+- The user must be a staff member
+
 **Body:**
 ```json
 {
   	"hero_id":"b55dcf4a-e723-495e-b920-738c4b6d221d"
 }
 ```
-
-**Notes:**
-- `hero_id`: the hero's id (UUID)
-- The user must be a staff member
 
 **Response:**
 ```json
@@ -683,16 +614,16 @@ After creating a user account and verifying their email, a user can apply to be 
 
 **POST:** `/api/v1/heroes/decline`
 
+**Notes:**
+- `hero_id`: the hero's id (UUID)
+- The user must be a staff member
+
 **Body:**
 ```json
 {
   	"hero_id":"b55dcf4a-e723-495e-b920-738c4b6d221d"
 }
 ```
-
-**Notes:**
-- `hero_id`: the hero's id (UUID)
-- The user must be a staff member
 
 **Response:**
 ```json
@@ -731,29 +662,16 @@ After creating a user account and verifying their email, a user can apply to be 
         "id": "878d0570-4763-41f9-b122-bc46e444d62d",
         "first_name": "Clark",
         "last_name": "Kent",
+        "profile_image": "https://media.licdn.com/mpr/mpr/shrink_100_100/p/5/005/040/0cd/008cf89.jpg",
         "created": "2016-11-17T22:28:42.769133Z"
       },
       "discipline": "FE",
-      "short_bio": "I am an awesome front end engineer!",
-      "resume": "This is my resume",
+      "title": "Set up a ReactJS sight",
+      "description": "This a further description of how I can help you with ReactJS",
       "years_of_exp": 10,
       "rate_in_cents": 500,
-      "skills": [
-        {
-          "name": "Javascript",
-          "years": 10
-        },
-        {
-          "name": "Django",
-          "years": 5
-        },
-        {
-          "name": "ReactJS",
-          "years": 9
-        }
-      ],
-      "linkedin_url": "http://www.django-rest-framework.org",
-      "created": "2016-11-17T22:29:31.790223Z"
+      "created": "2016-11-17T22:29:31.790223Z",
+      "updated": "2016-11-30T02:46:51.584685Z"
     },
     {
       "id": "b55dcf4a-e723-495e-b920-738c4b6d221d",
@@ -761,29 +679,16 @@ After creating a user account and verifying their email, a user can apply to be 
         "id": "7ee66bfc-02a6-42ac-a488-affd5105d5a1",
         "first_name": "Tech",
         "last_name": "Hero",
+        "profile_image": "https://media.licdn.com/mpr/mpr/shrink_100_100/p/5/005/040/0cd/008cf89.jpg",
         "created": "2016-11-17T21:55:27.410554Z"
       },
       "discipline": "BE",
-      "short_bio": "I am an awesome backend engineer!",
-      "resume": "This is my resume",
+      "title": "Set up a production level REST API with Django",
+      "description": "This a further description of how I can help you with REST APIs with Django",
       "years_of_exp": 3,
       "rate_in_cents": 100,
-      "skills": [
-        {
-          "name": "Python",
-          "years": 2
-        },
-        {
-          "name": "Django",
-          "years": 2
-        },
-        {
-          "name": "ReactJS",
-          "years": 2
-        }
-      ],
-      "linkedin_url": "http://www.django-rest-framework.org",
-      "created": "2016-11-17T21:56:53.935553Z"
+      "created": "2016-11-17T21:56:53.935553Z",
+      "updated": "2016-11-30T02:46:51.584685Z"
     }
   ]
 }
@@ -793,7 +698,7 @@ After creating a user account and verifying their email, a user can apply to be 
 - `200` if successful
 
 
-#### Retrieve Hero detail
+#### Get Hero detail
 
 **GET:** `/api/v1/heroes/:hero_id`
 
@@ -809,31 +714,18 @@ After creating a user account and verifying their email, a user can apply to be 
       "id": "085e8bbf-4430-4df8-9233-8269b52bd4bf",
       "first_name": "Tom",
       "last_name": "Brady",
-      "email": "bradytime@gmail.com",
       "profile_image": "https://media.licdn.com/mpr/mpr/shrink_100_100/p/5/005/040/0cd/008cf89.jpg",
       "created": "2016-11-16T15:56:56.179930Z"
     },
-    "discipline": "UX",
-    "short_bio": "I switched to UX",
-    "resume": "This is my resume",
+    "discipline": "BE",
+    "title": "Set up a production level REST API with Django",
+    "description": "This a further description of how I can help you with REST APIs with Django",
+  	"short_bio": "This is short summary of myself",
     "years_of_exp": 1,
     "rate_in_cents": 0,
-    "skills": [
-      {
-        "name": "Photoshop",
-        "years": 1
-      },
-      {
-        "name": "Lightroom",
-        "years": 1
-      },
-      {
-        "name": "HTML",
-        "years": 1
-      }
-    ],
     "linkedin_url": "http://www.django-rest-framework.org",
     "created": "2016-11-16T16:05:36.716298Z",
+    "updated": "2016-11-30T02:46:51.584685Z"
 }
 ```
 
@@ -843,29 +735,25 @@ After creating a user account and verifying their email, a user can apply to be 
 
 
 ### Call Request Routes
-Call requests are what users make to any hero they desire. The user has to have a verified email and verified phone before they can make a call request.
+Call requests are what users make to any hero they desire. The user has to be authenticated, have a verified email and phone and a verified form of payment.
 
 #### Create a call request
 
 **POST:** `/api/v1/call-request/`
+
+**Notes:**
+- `hero_id`: the hero's id (UUID)
+- `message`: a summary or reason for the call
+- `estimated_length`: the approximate time for the call in minutes
 
 **Body:**
 ```json
 {
   	"hero_id":"b55dcf4a-e723-495e-b920-738c4b6d221d",
     "message": "This is a general summary or reason for the call",
-    "estimated_length": 15,
-    "datetime_one": "2016-11-17T22:06:00.000000Z",
-    "datetime_two": "2016-11-17T22:06:15.000000Z",
-    "datetime_three": "2016-11-17T22:06:30.000000Z"
+    "estimated_length": 15
 }
 ```
-
-**Notes:**
-- `hero_id`: the hero's id (UUID)
-- `message`: a summary or reason for the call
-- `estimated_length`: the approximate time for the call in minutes
-- `datetime_one`, `datetime_two` and `datetime_three` are UTC datetimes the user suggested for the call
 
 **Response:**
 ```json
@@ -875,10 +763,10 @@ Call requests are what users make to any hero they desire. The user has to have 
     "hero": "b55dcf4a-e723-495e-b920-738c4b6d221d",
     "message": "This is a general summary or reason for the call",
     "estimated_length": 15,
-    "datetime_one": "2016-11-17T22:06:00.000000Z",
-    "datetime_two": "2016-11-17T22:06:15.000000Z",
-    "datetime_three": "2016-11-17T22:06:30.000000Z",
-    "expired": false,
+    "accepted": null,
+    "reason": "",
+    "times": [],
+    "accepted_time": null,
     "created": "2016-11-17T22:06:50.108634Z"
 }
 ```
@@ -886,5 +774,235 @@ Call requests are what users make to any hero they desire. The user has to have 
 **Status Codes:**
 - `200` if successful
 - `400` if incorrect data is provided
-- `403` if the user is not staff
+- `403` if the user is not authenticated or email/phone is unverified
+
+
+#### Accept or decline a call request
+
+**PATCH:** `/api/v1/call-request/:call_request_id`
+
+**Notes:**
+- The user must be a hero
+- `accepted`: a boolean stating if the hero accepted or declined the call request
+- `reason`: A charfield describing why the request was declined (only required if call request is declined)
+- `times`: An array of times the hero is available (3 required)
+- `accepted_time`: This is the final accepted_time by either the user or the hero (both users can make time requests back and forth). A null `accepted_time` means that no time has been agreed upon yet.
+
+**Body:**
+```json
+{
+  	"accepted": true,
+    "times": ["2016-11-17T22:06:00.000000Z", "2016-11-17T22:06:30.000000Z", "2016-11-17T22:07:00.000000Z"],
+}
+```
+
+**Response:**
+```json
+{
+    "id": 1,
+    "user": "fd6494d8-e684-4f4b-960c-c83f56d1d790",
+    "hero": "b55dcf4a-e723-495e-b920-738c4b6d221d",
+    "message": "This is a general summary or reason for the call",
+    "estimated_length": 15,
+    "accepted": true,
+    "reason": "",
+    "times": [
+      {
+        "role": "hero",
+        "time_one": "2016-11-17T22:06:00.000000Z",
+        "time_two": "2016-11-17T22:06:30.000000Z",
+        "time_three": "2016-11-17T22:07:00.000000Z",
+        "timestamp": "2016-11-17T22:06:50.108634Z"
+      }
+    ],
+    "accepted_time": null,
+    "created": "2016-11-17T22:06:50.108634Z"
+}
+```
+
+**Body:**
+```json
+{
+  	"accepted": false,
+    "reason": "Not comfortable talking about this subject.",
+}
+```
+
+**Response:**
+```json
+{
+    "id": 1,
+    "user": "fd6494d8-e684-4f4b-960c-c83f56d1d790",
+    "hero": "b55dcf4a-e723-495e-b920-738c4b6d221d",
+    "message": "This is a general summary or reason for the call",
+    "estimated_length": 15,
+    "accepted": false,
+    "reason": "Not comfortable talking about this subject.",
+    "times": [],
+    "accepted_time": null,
+    "created": "2016-11-17T22:06:50.108634Z"
+}
+```
+
+**Status Codes:**
+- `200` if successful
+- `400` if incorrect data is provided
+- `403` if the user is not a hero
+
+
+#### Accept time or suggest new times
+
+**PATCH:** `/api/v1/call-request/:call_request_id`
+
+**Notes:**
+- The user can be user or hero
+- `times`: An array of times the user/hero is available (3 required)
+- `accepted_time`: This is the final accepted_time by either the user or the hero (both users can make time requests back and forth). A null `accepted_time` means that no time has been agreed upon yet.
+
+**Body:**
+```json
+{
+  	"accepted_time": "2016-11-17T22:06:00.000000Z"
+}
+```
+
+**Response:**
+```json
+{
+    "id": 1,
+    "user": "fd6494d8-e684-4f4b-960c-c83f56d1d790",
+    "hero": "b55dcf4a-e723-495e-b920-738c4b6d221d",
+    "message": "This is a general summary or reason for the call",
+    "estimated_length": 15,
+    "accepted": true,
+    "reason": "",
+    "times": [
+      {
+        "role": "hero",
+        "time_one": "2016-11-17T22:06:00.000000Z",
+        "time_two": "2016-11-17T22:06:30.000000Z",
+        "time_three": "2016-11-17T22:07:00.000000Z",
+        "timestamp": "2016-11-17T22:06:50.108634Z"
+      }
+    ],
+    "accepted_time": "2016-11-17T22:06:00.000000Z",
+    "created": "2016-11-17T22:06:50.108634Z"
+}
+```
+
+**Body:**
+```json
+{
+  	"times": ["2016-11-18T22:06:00.000000Z", "2016-11-18T22:06:30.000000Z", "2016-11-18T22:07:00.000000Z"]
+}
+```
+
+**Response:**
+```json
+{
+    "id": 1,
+    "user": "fd6494d8-e684-4f4b-960c-c83f56d1d790",
+    "hero": "b55dcf4a-e723-495e-b920-738c4b6d221d",
+    "message": "This is a general summary or reason for the call",
+    "estimated_length": 15,
+    "accepted": true,
+    "reason": "",
+    "times": [{
+        "role": "hero",
+        "time_one": "2016-11-17T22:06:00.000000Z",
+        "time_two": "2016-11-17T22:06:30.000000Z",
+        "time_three": "2016-11-17T22:07:00.000000Z",
+        "timestamp": "2016-11-17T22:06:50.108634Z"
+      },
+      {
+        "role": "user",
+        "time_one": "2016-11-18T22:06:00.000000Z",
+        "time_two": "2016-11-18T22:06:30.000000Z",
+        "time_three": "2016-11-18T22:07:00.000000Z",
+        "timestamp": "2016-11-17T22:06:50.108634Z"
+      }
+    ],
+    "accepted_time": null,
+    "created": "2016-11-17T22:06:50.108634Z"
+}
+```
+
+**Status Codes:**
+- `200` if successful
+- `400` if incorrect data is provided
+- `403` if the user is not a hero
+
+
+#### Get Call Request detail
+
+**GET:** `/api/v1/call-request/:call_request_id`
+
+**Response:**
+```json
+{
+    "id": 1,
+    "user": "fd6494d8-e684-4f4b-960c-c83f56d1d790",
+    "hero": "b55dcf4a-e723-495e-b920-738c4b6d221d",
+    "message": "This is a general summary or reason for the call",
+    "estimated_length": 15,
+    "accepted": true,
+    "reason": "",
+    "times": [
+      {
+        "role": "hero",
+        "time_one": "2016-11-17T22:06:00.000000Z",
+        "time_two": "2016-11-17T22:06:30.000000Z",
+        "time_three": "2016-11-17T22:07:00.000000Z",
+        "timestamp": "2016-11-17T22:06:50.108634Z"
+      }
+    ],
+    "accepted_time": "2016-11-17T22:06:00.000000Z",
+    "created": "2016-11-17T22:06:50.108634Z"
+}
+```
+
+**Status Codes:**
+- `200` if successful
+- `403` if the user is not the user or hero in call request
+- `404` if call request with provided id is not found
+
+
+#### Get Call Request list
+
+**GET:** `/api/v1/call-request/`
+
+**Response:**
+```json
+{
+  "count": 2,
+  "next": null,
+  "previous": null,
+  "results": [
+    {
+        "id": 1,
+        "user": "fd6494d8-e684-4f4b-960c-c83f56d1d790",
+        "hero": "b55dcf4a-e723-495e-b920-738c4b6d221d",
+        "message": "This is a general summary or reason for the call",
+        "estimated_length": 15,
+        "accepted": true,
+        "reason": "",
+        "times": [
+          {
+            "role": "hero",
+            "time_one": "2016-11-17T22:06:00.000000Z",
+            "time_two": "2016-11-17T22:06:30.000000Z",
+            "time_three": "2016-11-17T22:07:00.000000Z",
+            "timestamp": "2016-11-17T22:06:50.108634Z"
+          }
+        ],
+        "accepted_time": "2016-11-17T22:06:00.000000Z",
+        "created": "2016-11-17T22:06:50.108634Z"
+    },
+    ...
+  ]
+}
+```
+
+**Status Codes:**
+- `200` if successful
 

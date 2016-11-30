@@ -62,7 +62,7 @@ class LimitedUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('id', 'first_name', 'last_name', 'created')
+        fields = ('id', 'first_name', 'last_name', 'profile_image', 'created')
 
 
 class UserSerializer(serializers.ModelSerializer):

@@ -10,8 +10,8 @@ from utils.mixins import AtomicMixin
 
 from .models import Hero, HeroAcceptAction
 from .permissions import IsHeroOrStaff
-from .serializers import (CreateUpdateHeroSerializer, HeroDetailSerializer, AcceptDeclineHeroSerializer,
-    HeroAcceptActionSerializer, HeroSerializer)
+from .serializers import (CreateUpdateHeroSerializer, HeroProfileSerializer, AcceptDeclineHeroSerializer,
+    HeroAcceptActionSerializer, HeroSerializer, HeroDetailSerializer)
 
 
 class ApplyForHeroView(AtomicMixin, generics.GenericAPIView):
@@ -100,5 +100,11 @@ class DeclineHeroView(generics.CreateAPIView):
 
 class GetHeroListView(generics.ListAPIView):
     serializer_class = HeroSerializer
+    permission_classes = (AllowAny,)
+    queryset = Hero.objects.filter(accepted=True)
+
+
+class GetHeroDetailView(generics.RetrieveAPIView):
+    serializer_class = HeroDetailSerializer
     permission_classes = (AllowAny,)
     queryset = Hero.objects.filter(accepted=True)
