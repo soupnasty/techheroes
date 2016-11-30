@@ -72,6 +72,8 @@ class AcceptHeroView(generics.CreateAPIView):
         hero.accepted = True
         hero.save()
 
+        hero.send_acceptance_email()
+
         accept_action = HeroAcceptAction.objects.create(user=request.user, hero=hero, accepted=hero.accepted)
         serializer = HeroAcceptActionSerializer(accept_action)
         return Response(serializer.data, status=status.HTTP_200_OK)

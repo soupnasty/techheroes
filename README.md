@@ -453,6 +453,7 @@ After creating a user account and verifying their email, a user can apply to be 
 
 **Notes:**
 - `accepted`: This is if the Hero has been accepted by staff, defaults to False
+- `slug`: This field is used for the hero detail page url
 
 **Response:**
 ```json
@@ -465,6 +466,7 @@ After creating a user account and verifying their email, a user can apply to be 
         "profile_image": null,
         "created": "2016-11-16T15:56:56.179930Z"
     },
+    "slug": "tom-brady",
     "discipline": "BE",
     "title": "Set up a production level REST API with Django",
     "description": "This a further description of how I can help you with REST APIs with Django",
@@ -509,6 +511,7 @@ After creating a user account and verifying their email, a user can apply to be 
         "created": "2016-11-16T15:56:56.179930Z",
         "updated": "2016-11-16T17:05:00.423756Z"
     },
+    "slug": "tom-brady",
     "discipline": "BE",
     "title": "Set up a production level REST API with Django",
     "description": "This a further description of how I can help you with REST APIs with Django",
@@ -567,6 +570,7 @@ After creating a user account and verifying their email, a user can apply to be 
       "created": "2016-11-16T15:56:56.179930Z",
       "updated": "2016-11-16T17:05:00.423756Z"
     },
+    "slug": "tom-brady",
     "discipline": "FE",
     "title": "Set up a ReactJS sight",
     "description": "This a further description of how I can help you with ReactJS",
@@ -593,6 +597,7 @@ After creating a user account and verifying their email, a user can apply to be 
 **POST:** `/api/v1/heroes/accept`
 
 **Notes:**
+- When a staff member accepts a hero, an email will be sent to the hero.
 - `hero_id`: the hero's id (UUID)
 - The user must be a staff member
 
@@ -674,6 +679,7 @@ After creating a user account and verifying their email, a user can apply to be 
         "profile_image": "https://media.licdn.com/mpr/mpr/shrink_100_100/p/5/005/040/0cd/008cf89.jpg",
         "created": "2016-11-17T22:28:42.769133Z"
       },
+      "slug": "clark-kent",
       "discipline": "FE",
       "title": "Set up a ReactJS sight",
       "description": "This a further description of how I can help you with ReactJS",
@@ -693,6 +699,7 @@ After creating a user account and verifying their email, a user can apply to be 
         "profile_image": "https://media.licdn.com/mpr/mpr/shrink_100_100/p/5/005/040/0cd/008cf89.jpg",
         "created": "2016-11-17T21:55:27.410554Z"
       },
+      "slug": "tech-hero",
       "discipline": "BE",
       "title": "Set up a production level REST API with Django",
       "description": "This a further description of how I can help you with REST APIs with Django",
@@ -730,6 +737,7 @@ After creating a user account and verifying their email, a user can apply to be 
       "profile_image": "https://media.licdn.com/mpr/mpr/shrink_100_100/p/5/005/040/0cd/008cf89.jpg",
       "created": "2016-11-16T15:56:56.179930Z"
     },
+    "slug": "tom-brady",
     "discipline": "BE",
     "title": "Set up a production level REST API with Django",
     "description": "This a further description of how I can help you with REST APIs with Django",

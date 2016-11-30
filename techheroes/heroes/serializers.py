@@ -29,7 +29,7 @@ class HeroSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Hero
-        fields = ('id', 'user', 'discipline', 'title', 'description', 'position', 'company',
+        fields = ('id', 'user', 'slug', 'discipline', 'title', 'description', 'position', 'company',
                     'years_of_exp', 'rate_in_cents', 'created', 'updated')
         read_only_fields = ('id', 'created', 'updated')
 
@@ -38,7 +38,7 @@ class HeroDetailSerializer(HeroSerializer):
 
     class Meta:
         model = Hero
-        fields = ('id', 'user', 'discipline', 'title', 'description', 'position', 'company', 'short_bio',
+        fields = ('id', 'user', 'slug', 'discipline', 'title', 'description', 'position', 'company', 'short_bio',
                     'years_of_exp', 'rate_in_cents', 'linkedin_url', 'created', 'updated')
 
 
@@ -47,7 +47,7 @@ class HeroProfileSerializer(HeroSerializer):
 
     class Meta:
         model = Hero
-        fields = ('id', 'user', 'discipline', 'title', 'description', 'position', 'company', 'short_bio',
+        fields = ('id', 'user', 'slug', 'discipline', 'title', 'description', 'position', 'company', 'short_bio',
                     'years_of_exp', 'rate_in_cents', 'linkedin_url', 'created', 'updated')
 
 
