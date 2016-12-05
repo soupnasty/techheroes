@@ -1,3 +1,4 @@
+import pytz
 import uuid
 from datetime import timedelta
 
@@ -8,8 +9,10 @@ from django.core.mail import send_mail
 from django.db import models
 from django.utils import timezone
 from twilio.rest import TwilioRestClient
+from timezone_field import TimeZoneField
 
 from authentication.models import AuthToken, EmailToken, PhoneToken, PasswordToken, InvalidTokenError
+from utils.functions import convert_utc_to_local_time
 
 from .emails import get_email
 
@@ -52,6 +55,7 @@ class User(AbstractBaseUser):
     phone = models.CharField(max_length=10, unique=True, null=True)
     phone_verified = models.BooleanField(default=False)
     profile_image = models.URLField(blank=True, null=True)
+    timezone = TimeZoneField(default='America/Chicago')
 
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
@@ -206,6 +210,68 @@ class User(AbstractBaseUser):
 
         subject, text, html = get_email(context)
         self.send_email(subject, text, html=html, email=self.email)
+
+    def send_accpeted_call_request_email(self, call_request, times):
+        # TODO change this when email is ready
+        link = 'https://{0}/call-request/{1}'.format(settings.WEB_DOMAIN, call_request.id)
+        context = {
+            'user_name': self.get_full_name(),
+            'hero_name': call_request.hero.user.get_full_name(),
+            'link': link,
+            'message': call_request.message,
+            'estimated_length': call_request.estimated_length,
+            'datetime_one': convert_utc_to_local_time(times.datetime_one, self.timezone),
+            'datetime_two': convert_utc_to_local_time(times.datetime_two, self.timezone),
+            'datetime_three': convert_utc_to_local_time(times.datetime_three, self.timezone),
+            'type': 'hero_accepted_call_request'}
+
+        subject, text, html = get_email(context)
+        self.send_email(subject, text, html=html, email=self.email)
+
+    def send_hero_declined_call_request_email(self, call_request):
+        # TODO change this when email is ready
+        link = 'https://{0}/#heros'.format(settings.WEB_DOMAIN)
+        context = {
+            'user_name': self.get_full_name(),
+            'hero_name': call_request.hero.user.get_full_name(),
+            'link': link,
+            'message': call_request.message,
+            'estimated_length': call_request.estimated_length,
+            'reason': call_request.reason,
+            'type': 'hero_declined_call_request'}
+
+        subject, text, html = get_email(context)
+        self.send_email(subject, text, html=html, email=self.email)
+
+    def send_new_suggested_times_email(self, call_request, times):
+        # TODO change this when email is ready
+        link = 'https://{0}/call-request/{1}'.format(settings.WEB_DOMAIN, call_request.id)
+        context = {
+            'user_name': self.get_full_name(),
+            'hero_name': call_request.hero.user.get_full_name(),
+            'link': link,
+            'message': call_request.message,
+            'estimated_length': call_request.estimated_length,
+            'datetime_one': convert_utc_to_local_time(times.datetime_one, self.timezone),
+            'datetime_two': convert_utc_to_local_time(times.datetime_two, self.timezone),
+            'datetime_three': convert_utc_to_local_time(times.datetime_three, self.timezone),
+            'type': 'hero_suggested_new_times'}
+
+        subject, text, html = get_email(context)
+        self.send_email(subject, text, html=html, email=self.email)
+
+    def send_agreed_time_email(self, call_request):
+        context = {
+            'user_name': self.get_full_name(),
+            'hero_name': call_request.hero.user.get_full_name(),
+            'message': call_request.message,
+            'estimated_length': call_request.estimated_length,
+            'agreed_time': convert_utc_to_local_time(call_request.agreed_time, self.timezone),
+            'type': 'hero_agreed_to_time'}
+
+        subject, text, html = get_email(context)
+        self.send_email(subject, text, html=html, email=self.email)
+
 
 
 

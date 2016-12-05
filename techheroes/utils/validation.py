@@ -3,6 +3,7 @@ import re
 from disposable_email_checker.validators import validate_disposable_email
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
+from django.utils.timezone import now, timedelta
 
 from rest_framework import serializers
 
@@ -45,6 +46,12 @@ def valid_phone(value):
     if is_phone(value):
         return
     raise serializers.ValidationError('Phone numbers must be 10 digits.')
+
+
+def valid_suggested_time(value):
+    if value > now() + timedelta(minutes=30):
+        return
+    raise serializers.ValidationError('Times must be atleast 30 min in the future')
 
 
 def valid_password(value):

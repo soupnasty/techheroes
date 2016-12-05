@@ -14,7 +14,7 @@ def generate_token():
 
 
 class AuthToken(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='auth_tokens')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='auth_tokens', on_delete=models.CASCADE)
     token = models.CharField(max_length=36, default=generate_token)
     timestamp = models.DateTimeField(auto_now_add=True)
 
@@ -95,7 +95,7 @@ class VerificationToken(models.Model):
 
 
 class EmailToken(VerificationToken):
-    user = models.OneToOneField(settings.AUTH_USER_MODEL, related_name='email_token')
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, related_name='email_token', on_delete=models.CASCADE)
     email = models.EmailField(max_length=100)
 
     class Meta:
@@ -106,7 +106,7 @@ class EmailToken(VerificationToken):
 class PhoneToken(VerificationToken):
     TOKEN_LENGTH = 6
 
-    user = models.OneToOneField(settings.AUTH_USER_MODEL, related_name='phone_token')
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, related_name='phone_token', on_delete=models.CASCADE)
     phone = models.CharField(max_length=10)
 
     class Meta:
@@ -117,7 +117,7 @@ class PhoneToken(VerificationToken):
 class PasswordToken(VerificationToken):
     TOKEN_LENGTH = 8
 
-    user = models.OneToOneField(settings.AUTH_USER_MODEL, related_name='password_token')
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, related_name='password_token', on_delete=models.CASCADE)
 
     class Meta:
         verbose_name = u'Password Verification Token'

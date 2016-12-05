@@ -1,4 +1,3 @@
-import uuid
 from datetime import timedelta
 
 from django.conf import settings
@@ -8,6 +7,7 @@ from django.utils import timezone
 from django.utils.text import slugify
 
 from accounts.models import User
+from utils.functions import convert_utc_to_local_time
 
 from .emails import get_email
 
@@ -66,6 +66,49 @@ class Hero(models.Model):
         # TODO change this when email is ready
         link = 'https://{0}/hero/{1}'.format(settings.WEB_DOMAIN, self.slug)
         context = {'hero_name': self.user.get_full_name(), 'link': link, 'type': 'accepted_hero'}
+
+        subject, text, html = get_email(context)
+        self.user.send_email(subject, text, html=html, email=self.user.email)
+
+    def send_new_call_request_email(self, call_request):
+        # TODO change this when email is ready
+        link = 'https://{0}/call-requests/accept-or-decline/{1}'.format(settings.WEB_DOMAIN, call_request.id)
+        context = {
+            'hero_name': self.user.first_name,
+            'link': link,
+            'user_name': call_request.user.get_full_name(),
+            'message': call_request.message,
+            'estimated_length': call_request.estimated_length,
+            'type': 'new_call_request'}
+
+        subject, text, html = get_email(context)
+        self.user.send_email(subject, text, html=html, email=self.user.email)
+
+    def send_new_suggested_times_email(self, call_request, times):
+        # TODO change this when email is ready
+        link = 'https://{0}/call-request/{1}'.format(settings.WEB_DOMAIN, call_request.id)
+        context = {
+            'to_user_name': self.user.get_full_name(),
+            'from_user_name': call_request.user.get_full_name(),
+            'link': link,
+            'message': call_request.message,
+            'estimated_length': call_request.estimated_length,
+            'datetime_one': convert_utc_to_local_time(times.datetime_one, self.user.timezone),
+            'datetime_two': convert_utc_to_local_time(times.datetime_two, self.user.timezone),
+            'datetime_three': convert_utc_to_local_time(times.datetime_three, self.user.timezone),
+            'type': 'user_suggested_new_times'}
+
+        subject, text, html = get_email(context)
+        self.user.send_email(subject, text, html=html, email=self.user.email)
+
+    def send_agreed_time_email(self, call_request):
+        context = {
+            'to_user_name': self.user.get_full_name(),
+            'from_user_name': call_request.user.get_full_name(),
+            'message': call_request.message,
+            'estimated_length': call_request.estimated_length,
+            'agreed_time': convert_utc_to_local_time(call_request.agreed_time, self.user.timezone),
+            'type': 'user_agreed_to_time'}
 
         subject, text, html = get_email(context)
         self.user.send_email(subject, text, html=html, email=self.user.email)

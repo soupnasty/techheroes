@@ -59,13 +59,18 @@ class PasswordChangeSerializer(serializers.Serializer):
 
 
 class LimitedUserSerializer(serializers.ModelSerializer):
+    timezone = serializers.SerializerMethodField()
 
     class Meta:
         model = User
-        fields = ('id', 'first_name', 'last_name', 'profile_image', 'created')
+        fields = ('id', 'first_name', 'last_name', 'profile_image', 'timezone', 'created')
+
+    def get_timezone(self, obj):
+        return str(obj.timezone)
 
 
 class UserSerializer(serializers.ModelSerializer):
+    timezone = serializers.SerializerMethodField()
     email_pending = serializers.SerializerMethodField()
     phone_pending = serializers.SerializerMethodField()
     phone = serializers.CharField(allow_null=True, validators=[valid_phone])
@@ -73,9 +78,13 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('id', 'first_name', 'last_name', 'email', 'email_verified', 'email_notifications', 'phone',
-                'phone_verified', 'profile_image', 'is_active', 'email_pending', 'phone_pending', 'created', 'updated')
+        fields = ('id', 'first_name', 'last_name', 'email', 'email_verified', 'email_notifications',
+                'phone', 'phone_verified', 'profile_image', 'is_active', 'email_pending',
+                'phone_pending', 'timezone', 'created', 'updated')
         read_only_fields = ('id', 'email_verified', 'phone_verified', 'created', 'updated')
+
+    def get_timezone(self, obj):
+        return str(obj.timezone)
 
     def get_email_pending(self, obj):
         if hasattr(obj, 'email_token') and obj.email_token.id and not obj.email_token.is_expired:
@@ -106,8 +115,9 @@ class UserWithTokenSerializer(UserSerializer):
 
     class Meta:
         model = User
-        fields = ('id', 'first_name', 'last_name', 'email', 'email_verified', 'email_notifications', 'phone',
-            'phone_verified', 'profile_image', 'is_active', 'email_pending', 'phone_pending','created', 'updated', 'token')
+        fields = ('id', 'first_name', 'last_name', 'email', 'email_verified', 'email_notifications',
+                'phone', 'phone_verified', 'profile_image', 'is_active', 'email_pending',
+                'phone_pending', 'timezone', 'created', 'updated', 'token')
         read_only_fields = ('id', 'email_verified', 'phone_verified', 'created', 'updated', 'token')
 
     def get_auth_token(self, obj):

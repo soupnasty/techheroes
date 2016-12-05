@@ -55,7 +55,13 @@ There are a few configurations managed as environment variables. In the developm
 - [Get Hero detail](#get-hero-detail)
 
 #### Call Request Routes
-- [Create a Hero request](#get-hero-list)
+- [Create a call request](#create-a-call-request)
+- [Accept a call request](#accept-a-call-request)
+- [Decline a call request](#decline-a-call-request)
+- [Suggest new times](#suggest-new-times)
+- [Accept time](#accept-time)
+- [Get Call Request detail](#get-call-request-detail)
+- [Get Call Request list](#get-call-request-list)
 
 
 ## API Routes
@@ -71,6 +77,7 @@ Users only require first_name, last_name, email and password to create an accoun
 **Notes:**
 - `email`: user's email address, must be unique (string)
 - `password`: must be at least 8 chars with at least 1 number (string)
+- `timezone` of the user. We need this so we can inform users the timezone the hero they are requesting is in and vice versa. Also need their timezone to format the UTC times to their aware local time.
 
 **Body:**
 ```json
@@ -78,7 +85,8 @@ Users only require first_name, last_name, email and password to create an accoun
     "first_name": "Cam",
     "last_name": "Newton",
     "email": "test@test.com",
-    "password": "password1"
+    "password": "password1",
+    "timezone": "America/Chicago"
 }
 ```
 
@@ -97,6 +105,7 @@ Users only require first_name, last_name, email and password to create an accoun
     "is_active": false,
     "email_pending": "test@test.com",
     "phone_pending": null,
+    "timezone": "America/Chicago",
     "created": "2016-11-16T15:56:56.179930Z",
     "updated": "2016-11-16T15:59:09.189275Z",
     "token": "ccf66788480947c48e7c7a3eb168ee12"
@@ -136,6 +145,7 @@ Users only require first_name, last_name, email and password to create an accoun
     "is_active": false,
     "email_pending": "test@test.com",
     "phone_pending": null,
+    "timezone": "America/Chicago",
     "created": "2016-11-16T15:56:56.179930Z",
     "updated": "2016-11-16T15:59:09.189275Z",
     "token": "ccf66788480947c48e7c7a3eb168ee12"
@@ -180,6 +190,7 @@ Users only require first_name, last_name, email and password to create an accoun
     "is_active": false,
     "email_pending": "test@test.com",
     "phone_pending": null,
+    "timezone": "America/Chicago",
     "created": "2016-11-16T15:56:56.179930Z",
     "updated": "2016-11-16T15:59:09.189275Z"
 }
@@ -231,6 +242,7 @@ Users only require first_name, last_name, email and password to create an accoun
     "is_active": false,
     "email_pending": "test@test.com",
     "phone_pending": "1234567890",
+    "timezone": "America/Chicago",
     "created": "2016-11-16T15:56:56.179930Z",
     "updated": "2016-11-16T17:02:27.978451Z"
 }
@@ -272,6 +284,7 @@ Users only require first_name, last_name, email and password to create an accoun
     "is_active": false,
     "email_pending": null,
     "phone_pending": "1234567890",
+    "timezone": "America/Chicago",
     "created": "2016-11-16T15:56:56.179930Z",
     "updated": "2016-11-16T17:02:27.978451Z"
 }
@@ -314,6 +327,7 @@ Users only require first_name, last_name, email and password to create an accoun
     "is_active": false,
     "email_pending": null,
     "phone_pending": null,
+    "timezone": "America/Chicago",
     "created": "2016-11-16T15:56:56.179930Z",
     "updated": "2016-11-16T17:02:27.978451Z"
 }
@@ -409,6 +423,7 @@ Users only require first_name, last_name, email and password to create an accoun
     "is_active": false,
     "email_pending": null,
     "phone_pending": null,
+    "timezone": "America/Chicago",
     "created": "2016-11-16T15:56:56.179930Z",
     "updated": "2016-11-16T17:02:27.978451Z",
     "token": "ccf66788480947c48e7c7a3eb168ee12"
@@ -464,6 +479,7 @@ After creating a user account and verifying their email, a user can apply to be 
         "first_name": "Tom",
         "last_name": "Brady",
         "profile_image": null,
+        "timezone": "America/Chicago",
         "created": "2016-11-16T15:56:56.179930Z"
     },
     "slug": "tom-brady",
@@ -476,6 +492,7 @@ After creating a user account and verifying their email, a user can apply to be 
     "years_of_exp": 3,
     "rate_in_cents": 100,
     "accepted": false,
+    "linkedin_url": "http://www.django-rest-framework.org",
     "created": "2016-11-16T16:05:36.716298Z",
     "updated": "2016-11-16T18:44:27.964276Z"
 }
@@ -508,6 +525,7 @@ After creating a user account and verifying their email, a user can apply to be 
         "is_active": false,
         "email_pending": null,
         "phone_pending": null,
+        "timezone": "America/Chicago",
         "created": "2016-11-16T15:56:56.179930Z",
         "updated": "2016-11-16T17:05:00.423756Z"
     },
@@ -567,6 +585,7 @@ After creating a user account and verifying their email, a user can apply to be 
       "is_active": false,
       "email_pending": null,
       "phone_pending": null,
+      "timezone": "America/Chicago",
       "created": "2016-11-16T15:56:56.179930Z",
       "updated": "2016-11-16T17:05:00.423756Z"
     },
@@ -604,7 +623,7 @@ After creating a user account and verifying their email, a user can apply to be 
 **Body:**
 ```json
 {
-  	"hero_id":"b55dcf4a-e723-495e-b920-738c4b6d221d"
+  	"hero_id": 1
 }
 ```
 
@@ -612,7 +631,7 @@ After creating a user account and verifying their email, a user can apply to be 
 ```json
 {
     "user": "fd6494d8-e684-4f4b-960c-c83f56d1d790",
-    "hero": "b55dcf4a-e723-495e-b920-738c4b6d221d",
+    "hero": 1,
     "accepted": true,
     "timestamp": "2016-11-17T22:05:52.093318Z"
 }
@@ -657,7 +676,7 @@ After creating a user account and verifying their email, a user can apply to be 
 
 #### Get Hero list
 
-**GET:** `/api/v1/heroes/list`
+**GET:** `/api/v1/heroes/`
 
 **Notes:**
 - This lists all the heroes that have been accepted by staff.
@@ -677,6 +696,7 @@ After creating a user account and verifying their email, a user can apply to be 
         "first_name": "Clark",
         "last_name": "Kent",
         "profile_image": "https://media.licdn.com/mpr/mpr/shrink_100_100/p/5/005/040/0cd/008cf89.jpg",
+        "timezone": "America/Chicago",
         "created": "2016-11-17T22:28:42.769133Z"
       },
       "slug": "clark-kent",
@@ -697,6 +717,7 @@ After creating a user account and verifying their email, a user can apply to be 
         "first_name": "Tech",
         "last_name": "Hero",
         "profile_image": "https://media.licdn.com/mpr/mpr/shrink_100_100/p/5/005/040/0cd/008cf89.jpg",
+        "timezone": "America/Chicago",
         "created": "2016-11-17T21:55:27.410554Z"
       },
       "slug": "tech-hero",
@@ -735,6 +756,7 @@ After creating a user account and verifying their email, a user can apply to be 
       "first_name": "Tom",
       "last_name": "Brady",
       "profile_image": "https://media.licdn.com/mpr/mpr/shrink_100_100/p/5/005/040/0cd/008cf89.jpg",
+      "timezone": "America/Chicago",
       "created": "2016-11-16T15:56:56.179930Z"
     },
     "slug": "tom-brady",
@@ -762,7 +784,7 @@ Call requests are what users make to any hero they desire. The user has to be au
 
 #### Create a call request
 
-**POST:** `/api/v1/call-request/`
+**POST:** `/api/v1/call-requests/`
 
 **Notes:**
 - `hero_id`: the hero's id (UUID)
@@ -772,50 +794,53 @@ Call requests are what users make to any hero they desire. The user has to be au
 **Body:**
 ```json
 {
-  	"hero_id":"b55dcf4a-e723-495e-b920-738c4b6d221d",
+  	"hero_id": 1,
     "message": "This is a general summary or reason for the call",
     "estimated_length": 15
 }
 ```
+
+**Notes:**
+- `status`: the status of the call request. Can either be `o`, `a` or `d` for `open`, `accepted` or `declined` respectively.
 
 **Response:**
 ```json
 {
     "id": 1,
     "user": "fd6494d8-e684-4f4b-960c-c83f56d1d790",
-    "hero": "b55dcf4a-e723-495e-b920-738c4b6d221d",
+    "hero": 1,
     "message": "This is a general summary or reason for the call",
     "estimated_length": 15,
-    "accepted": null,
+    "status": "o",
     "reason": "",
     "times": [],
-    "accepted_time": null,
-    "created": "2016-11-17T22:06:50.108634Z"
+    "agreed_time": null,
+    "created": "2016-11-17T22:06:50.108634Z",
+    "updated": "2016-11-17T22:06:50.108634Z"
 }
 ```
 
 **Status Codes:**
 - `200` if successful
 - `400` if incorrect data is provided
-- `403` if the user is not authenticated or email/phone is unverified
+- `403` if the user is not authenticated or email/phone is unverified or no payment verified
 
 
-#### Accept or decline a call request
+#### Accept a call request
 
-**PATCH:** `/api/v1/call-request/:call_request_id`
+**PATCH:** `/api/v1/call-requests/:call_request_id/accept/`
 
 **Notes:**
 - The user must be a hero
-- `accepted`: a boolean stating if the hero accepted or declined the call request
-- `reason`: A charfield describing why the request was declined (only required if call request is declined)
-- `times`: An array of times the hero is available (3 required)
-- `accepted_time`: This is the final accepted_time by either the user or the hero (both users can make time requests back and forth). A null `accepted_time` means that no time has been agreed upon yet.
+- `time_one`, `time_two`, `time_three`: Are all UTC datetimes. All times should all be at least 30 min ahead and may only be requested in 15 min intervals.
+- The status then changes from `o` (open) to `a` (accepted)
 
 **Body:**
 ```json
 {
-  	"accepted": true,
-    "times": ["2016-11-17T22:06:00.000000Z", "2016-11-17T22:06:30.000000Z", "2016-11-17T22:07:00.000000Z"],
+    "time_one": "2016-11-17T22:06:00.000000Z",
+    "time_two": "2016-11-17T22:06:30.000000Z",
+    "time_three": "2016-11-17T22:07:00.000000Z",
 }
 ```
 
@@ -824,46 +849,30 @@ Call requests are what users make to any hero they desire. The user has to be au
 {
     "id": 1,
     "user": "fd6494d8-e684-4f4b-960c-c83f56d1d790",
-    "hero": "b55dcf4a-e723-495e-b920-738c4b6d221d",
+    "hero": 1,
     "message": "This is a general summary or reason for the call",
     "estimated_length": 15,
-    "accepted": true,
+    "status": "a",
     "reason": "",
     "times": [
       {
-        "role": "hero",
-        "time_one": "2016-11-17T22:06:00.000000Z",
-        "time_two": "2016-11-17T22:06:30.000000Z",
-        "time_three": "2016-11-17T22:07:00.000000Z",
-        "timestamp": "2016-11-17T22:06:50.108634Z"
-      }
+       "user": {
+         "id": "b6513c6f-e3b5-4c00-ae10-1b78950d8c8a",
+         "first_name": "Tom",
+         "last_name": "Brady",
+         "profile_image": "https://media.licdn.com/mpr/mpr/shrink_100_100/p/5/005/040/0cd/008cf89.jpg",
+         "timezone": "America/Chicago",
+         "created": "2016-12-03T00:23:57.364198Z"
+       },
+       "datetime_one": "2017-12-25T06:00:00.000000Z",
+       "datetime_two": "2017-12-25T07:30:00.000000Z",
+       "datetime_three": "2017-12-25T08:30:00.000000Z",
+       "timestamp": "2016-12-05T17:04:23.659493Z"
+      },
     ],
-    "accepted_time": null,
-    "created": "2016-11-17T22:06:50.108634Z"
-}
-```
-
-**Body:**
-```json
-{
-  	"accepted": false,
-    "reason": "Not comfortable talking about this subject.",
-}
-```
-
-**Response:**
-```json
-{
-    "id": 1,
-    "user": "fd6494d8-e684-4f4b-960c-c83f56d1d790",
-    "hero": "b55dcf4a-e723-495e-b920-738c4b6d221d",
-    "message": "This is a general summary or reason for the call",
-    "estimated_length": 15,
-    "accepted": false,
-    "reason": "Not comfortable talking about this subject.",
-    "times": [],
-    "accepted_time": null,
-    "created": "2016-11-17T22:06:50.108634Z"
+    "agreed_time": null,
+    "created": "2016-11-17T22:06:50.108634Z",
+    "updated": "2016-12-05T17:19:58.206376Z"
 }
 ```
 
@@ -873,19 +882,59 @@ Call requests are what users make to any hero they desire. The user has to be au
 - `403` if the user is not a hero
 
 
-#### Accept time or suggest new times
+#### Decline a call request
 
-**PATCH:** `/api/v1/call-request/:call_request_id`
+**PATCH:** `/api/v1/call-requests/:call_request_id/decline/`
+
+**Notes:**
+- The user must be a hero
+- `reason`: A charfield describing why the request was declined (only required if call request is declined)
+- The status changes from `o` (open) to `d` (declined)
+
+**Body:**
+```json
+{
+    "reason": "Not comfortable talking about this subject."
+}
+```
+
+**Response:**
+```json
+{
+    "id": 1,
+    "user": "fd6494d8-e684-4f4b-960c-c83f56d1d790",
+    "hero": 1,
+    "message": "This is a general summary or reason for the call",
+    "estimated_length": 15,
+    "status": "d",
+    "reason": "Not comfortable talking about this subject.",
+    "times": [],
+    "agreed_time": null,
+    "created": "2016-11-17T22:06:50.108634Z",
+    "updated": "2016-12-05T17:19:58.206376Z"
+}
+```
+
+**Status Codes:**
+- `200` if successful
+- `400` if incorrect data is provided
+- `403` if the user is not a hero
+
+
+#### Suggest new times
+
+**PATCH:** `/api/v1/call-requests/:call_request_id/new-times/`
 
 **Notes:**
 - The user can be user or hero
-- `times`: An array of times the user/hero is available (3 required)
-- `accepted_time`: This is the final accepted_time by either the user or the hero (both users can make time requests back and forth). A null `accepted_time` means that no time has been agreed upon yet.
+- `time_one`, `time_two`, `time_three`: Are all UTC datetimes. All times should all be at least 30 min ahead and may only be requested in 15 min intervals.
 
 **Body:**
 ```json
 {
-  	"accepted_time": "2016-11-17T22:06:00.000000Z"
+    "time_one": "2017-12-25T10:00:00.000000Z",
+    "time_two": "2017-12-25T11:30:00.000000Z",
+    "time_three": "2017-12-25T12:30:00.000000Z"
 }
 ```
 
@@ -894,29 +943,63 @@ Call requests are what users make to any hero they desire. The user has to be au
 {
     "id": 1,
     "user": "fd6494d8-e684-4f4b-960c-c83f56d1d790",
-    "hero": "b55dcf4a-e723-495e-b920-738c4b6d221d",
+    "hero": 1,
     "message": "This is a general summary or reason for the call",
     "estimated_length": 15,
-    "accepted": true,
+    "status": "a",
     "reason": "",
     "times": [
       {
-        "role": "hero",
-        "time_one": "2016-11-17T22:06:00.000000Z",
-        "time_two": "2016-11-17T22:06:30.000000Z",
-        "time_three": "2016-11-17T22:07:00.000000Z",
-        "timestamp": "2016-11-17T22:06:50.108634Z"
-      }
+       "user": {
+         "id": "b6513c6f-e3b5-4c00-ae10-1b78950d8c8a",
+         "first_name": "Tom",
+         "last_name": "Brady",
+         "profile_image": "https://media.licdn.com/mpr/mpr/shrink_100_100/p/5/005/040/0cd/008cf89.jpg",
+         "timezone": "America/Chicago",
+         "created": "2016-12-03T00:23:57.364198Z"
+       },
+       "datetime_one": "2017-12-25T06:00:00.000000Z",
+       "datetime_two": "2017-12-25T07:30:00.000000Z",
+       "datetime_three": "2017-12-25T08:30:00.000000Z",
+       "timestamp": "2016-12-05T17:04:23.659493Z"
+      },
+      {
+        "user": {
+          "id": "90bad282-b2ac-48d7-b18b-2b4ad2e33007",
+          "first_name": "Some",
+          "last_name": "User",
+          "profile_image": "https://media.licdn.com/mpr/mpr/shrink_100_100/p/5/005/040/0cd/008cf89.jpg",
+          "timezone": "America/Chicago",
+          "created": "2016-12-05T16:29:36.676173Z"
+        },
+        "datetime_one": "2017-12-25T10:00:00.000000Z",
+        "datetime_two": "2017-12-25T11:30:00.000000Z",
+        "datetime_three": "2017-12-25T12:30:00.000000Z",
+        "timestamp": "2016-12-05T17:43:42.067673Z"
+      },
     ],
-    "accepted_time": "2016-11-17T22:06:00.000000Z",
+    "agreed_time": null,
     "created": "2016-11-17T22:06:50.108634Z"
 }
 ```
 
+**Status Codes:**
+- `200` if successful
+- `400` if incorrect data is provided
+- `403` if the user is not authenticated
+- `409` if the datetime already exists
+
+
+#### Accept time
+
+**PATCH:** `/api/v1/call-requests/:call_request_id/agreed-time/`
+
+- `agreed_time`: This is the final agreed_time by either the user or the hero (both users can make time requests back and forth). A null `agreed_time` means that no time has been agreed upon yet.
+
 **Body:**
 ```json
 {
-  	"times": ["2016-11-18T22:06:00.000000Z", "2016-11-18T22:06:30.000000Z", "2016-11-18T22:07:00.000000Z"]
+  	"agreed_time": "2016-11-17T22:06:00.000000Z"
 }
 ```
 
@@ -925,28 +1008,30 @@ Call requests are what users make to any hero they desire. The user has to be au
 {
     "id": 1,
     "user": "fd6494d8-e684-4f4b-960c-c83f56d1d790",
-    "hero": "b55dcf4a-e723-495e-b920-738c4b6d221d",
+    "hero": 1,
     "message": "This is a general summary or reason for the call",
     "estimated_length": 15,
-    "accepted": true,
+    "status": "a",
     "reason": "",
-    "times": [{
-        "role": "hero",
-        "time_one": "2016-11-17T22:06:00.000000Z",
-        "time_two": "2016-11-17T22:06:30.000000Z",
-        "time_three": "2016-11-17T22:07:00.000000Z",
-        "timestamp": "2016-11-17T22:06:50.108634Z"
-      },
+    "times": [
       {
-        "role": "user",
-        "time_one": "2016-11-18T22:06:00.000000Z",
-        "time_two": "2016-11-18T22:06:30.000000Z",
-        "time_three": "2016-11-18T22:07:00.000000Z",
-        "timestamp": "2016-11-17T22:06:50.108634Z"
-      }
+       "user": {
+         "id": "b6513c6f-e3b5-4c00-ae10-1b78950d8c8a",
+         "first_name": "Tom",
+         "last_name": "Brady",
+         "profile_image": "https://media.licdn.com/mpr/mpr/shrink_100_100/p/5/005/040/0cd/008cf89.jpg",
+         "timezone": "America/Chicago",
+         "created": "2016-12-03T00:23:57.364198Z"
+       },
+       "datetime_one": "2017-12-25T06:00:00.000000Z",
+       "datetime_two": "2017-12-25T07:30:00.000000Z",
+       "datetime_three": "2017-12-25T08:30:00.000000Z",
+       "timestamp": "2016-12-05T17:04:23.659493Z"
+     },
     ],
-    "accepted_time": null,
-    "created": "2016-11-17T22:06:50.108634Z"
+    "agreed_time": "2016-11-17T22:06:00.000000Z",
+    "created": "2016-11-17T22:06:50.108634Z",
+    "updated": "2016-12-05T17:37:05.617390Z"
 }
 ```
 
@@ -958,29 +1043,37 @@ Call requests are what users make to any hero they desire. The user has to be au
 
 #### Get Call Request detail
 
-**GET:** `/api/v1/call-request/:call_request_id`
+**GET:** `/api/v1/call-requests/:call_request_id`
 
 **Response:**
 ```json
 {
     "id": 1,
     "user": "fd6494d8-e684-4f4b-960c-c83f56d1d790",
-    "hero": "b55dcf4a-e723-495e-b920-738c4b6d221d",
+    "hero": 1,
     "message": "This is a general summary or reason for the call",
     "estimated_length": 15,
-    "accepted": true,
+    "status": "a",
     "reason": "",
     "times": [
       {
-        "role": "hero",
-        "time_one": "2016-11-17T22:06:00.000000Z",
-        "time_two": "2016-11-17T22:06:30.000000Z",
-        "time_three": "2016-11-17T22:07:00.000000Z",
-        "timestamp": "2016-11-17T22:06:50.108634Z"
-      }
+       "user": {
+         "id": "b6513c6f-e3b5-4c00-ae10-1b78950d8c8a",
+         "first_name": "Tom",
+         "last_name": "Brady",
+         "profile_image": "https://media.licdn.com/mpr/mpr/shrink_100_100/p/5/005/040/0cd/008cf89.jpg",
+         "timezone": "America/Chicago",
+         "created": "2016-12-03T00:23:57.364198Z"
+       },
+       "datetime_one": "2017-12-25T06:00:00.000000Z",
+       "datetime_two": "2017-12-25T07:30:00.000000Z",
+       "datetime_three": "2017-12-25T08:30:00.000000Z",
+       "timestamp": "2016-12-05T17:04:23.659493Z"
+     },
     ],
-    "accepted_time": "2016-11-17T22:06:00.000000Z",
-    "created": "2016-11-17T22:06:50.108634Z"
+    "agreed_time": "2016-11-17T22:06:00.000000Z",
+    "created": "2016-11-17T22:06:50.108634Z",
+    "updated": "2016-12-05T17:37:05.617390Z"
 }
 ```
 
@@ -992,7 +1085,7 @@ Call requests are what users make to any hero they desire. The user has to be au
 
 #### Get Call Request list
 
-**GET:** `/api/v1/call-request/`
+**GET:** `/api/v1/call-requests/`
 
 **Response:**
 ```json
@@ -1002,24 +1095,32 @@ Call requests are what users make to any hero they desire. The user has to be au
   "previous": null,
   "results": [
     {
-        "id": 1,
-        "user": "fd6494d8-e684-4f4b-960c-c83f56d1d790",
-        "hero": "b55dcf4a-e723-495e-b920-738c4b6d221d",
-        "message": "This is a general summary or reason for the call",
-        "estimated_length": 15,
-        "accepted": true,
-        "reason": "",
-        "times": [
-          {
-            "role": "hero",
-            "time_one": "2016-11-17T22:06:00.000000Z",
-            "time_two": "2016-11-17T22:06:30.000000Z",
-            "time_three": "2016-11-17T22:07:00.000000Z",
-            "timestamp": "2016-11-17T22:06:50.108634Z"
-          }
-        ],
-        "accepted_time": "2016-11-17T22:06:00.000000Z",
-        "created": "2016-11-17T22:06:50.108634Z"
+      "id": 1,
+      "user": "fd6494d8-e684-4f4b-960c-c83f56d1d790",
+      "hero": 1,
+      "message": "This is a general summary or reason for the call",
+      "estimated_length": 15,
+      "status": "a",
+      "reason": "",
+      "times": [
+        {
+         "user": {
+           "id": "b6513c6f-e3b5-4c00-ae10-1b78950d8c8a",
+           "first_name": "Tom",
+           "last_name": "Brady",
+           "profile_image": "https://media.licdn.com/mpr/mpr/shrink_100_100/p/5/005/040/0cd/008cf89.jpg",
+           "timezone": "America/Chicago",
+           "created": "2016-12-03T00:23:57.364198Z"
+         },
+         "datetime_one": "2017-12-25T06:00:00.000000Z",
+         "datetime_two": "2017-12-25T07:30:00.000000Z",
+         "datetime_three": "2017-12-25T08:30:00.000000Z",
+         "timestamp": "2016-12-05T17:04:23.659493Z"
+       },
+      ],
+      "agreed_time": "2016-11-17T22:06:00.000000Z",
+      "created": "2016-11-17T22:06:50.108634Z",
+      "updated": "2016-12-05T17:37:05.617390Z"
     },
     ...
   ]

@@ -12,6 +12,7 @@ psycopg2==2.6.2
 
 # Timezones
 pytz==2016.7
+django-timezone-field==2.0
 
 # Testing
 mock==2.0.0
