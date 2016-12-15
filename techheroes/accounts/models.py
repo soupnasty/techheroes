@@ -1,6 +1,5 @@
 import pytz
 import uuid
-from datetime import timedelta
 
 from django.conf import settings
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager

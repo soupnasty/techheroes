@@ -994,6 +994,8 @@ Call requests are what users make to any hero they desire. The user has to be au
 
 **PATCH:** `/api/v1/call-requests/:call_request_id/agreed-time/`
 
+**Notes:**
+- After a user accepts a time for the call, a text message is scheduled to be sent 15 minutes before the call time for both the hero and the user.
 - `agreed_time`: This is the final agreed_time by either the user or the hero (both users can make time requests back and forth). A null `agreed_time` means that no time has been agreed upon yet.
 
 **Body:**
