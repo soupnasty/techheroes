@@ -3,12 +3,17 @@ Django==1.10.3
 djangorestframework==3.5.3
 dj-database-url==0.4.0
 django-disposable-email-checker==1.2.1
+django-q==0.7.18
 
 # Docker
 docker-compose==1.9.0rc4
 
 # PostgresSQL
 psycopg2==2.6.2
+
+# Redis
+django-redis==4.6.0
+redis==2.10.5
 
 # Timezones
 pytz==2016.7

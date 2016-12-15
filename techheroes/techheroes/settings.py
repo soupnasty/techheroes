@@ -30,8 +30,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'bandit',
+    'django_q',
     'timezone_field',
-    
+
     'accounts',
     'authentication',
     'call_requests',
@@ -124,6 +125,34 @@ USE_L10N = True
 USE_TZ = True
 
 
+# Redis config
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://redis/1",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        }
+    }
+}
+
+
+# Django-Q
+# django-redis connection
+Q_CLUSTER = {
+    'name': 'tech-heroes',
+    'workers': 1,
+    'recycle': 100,
+    'timeout': 60,
+    'compress': False,
+    'save_limit': 250,
+    'queue_limit': 500,
+    'catch_up': False,
+    'label': 'Django Q',
+    'django_redis': 'default'
+}
+
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 
@@ -135,6 +164,7 @@ WEB_DOMAIN = os.getenv('WEB_DOMAIN', 'www.techheroes.xyz')
 
 AUTH_TOKEN_EXP_IN_DAYS = 7
 VERIFICATION_TOKEN_EXP_IN_DAYS = 7
+SMS_REMINDER_TIME_IN_MIN = 15
 
 if TESTING:
     EMAIL_HOST = "localhost"
@@ -159,4 +189,6 @@ AWS_SECRET_KEY = os.getenv('AWS_SECRET_KEY')
 TWILIO_ACCOUNT_ID = os.getenv('TWILIO_ACCOUNT_ID')
 TWILIO_API_TOKEN = os.getenv('TWILIO_API_TOKEN')
 TWILIO_NUMBER = os.getenv('TWILIO_NUMBER')
+
+CONFERENCE_NUMBER = 13122489065 
 

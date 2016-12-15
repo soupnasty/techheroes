@@ -1,5 +1,7 @@
 from datetime import timedelta
 
+from django_q.tasks import schedule
+from django_q.models import Schedule
 from django.conf import settings
 from django.contrib.postgres.fields import JSONField
 from django.db import models
@@ -53,6 +55,21 @@ class CallRequest(models.Model):
     def __str__(self):
         return 'User: {0} Hero: {1} Accepted Time: {2}'.format(
             self.user.get_full_name(), self.hero.user.get_full_name(), self.agreed_time)
+
+    def schedule_sms_reminders(self):
+        """ Schedule reminders for both the hero and user """
+        for user in [self.user, self.hero.user]:
+            message = ('This is a reminder from Tech Heroes! You have a call with {}. '
+                        'Dial this number {} in {} minutes.'.format(
+                        user.get_full_name(), settings.CONFERENCE_NUMBER, settings.SMS_REMINDER_TIME_IN_MIN))
+            next_run = self.agreed_time - timezone.timedelta(minutes=settings.SMS_REMINDER_TIME_IN_MIN)
+
+            schedule(
+                'accounts.User.send_sms',
+                message,
+                schedule_type=Schedule.ONCE,
+                next_run=next_run
+            )
 
 
 class TimeSuggestion(models.Model):

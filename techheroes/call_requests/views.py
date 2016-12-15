@@ -63,7 +63,7 @@ class CreateListCallRequestView(generics.ListCreateAPIView):
 
 class RetrieveCallRequestView(generics.RetrieveAPIView):
     serializer_class = CallRequestSerializer
-    permission_classes = (IsOwnerOrStaff,) 
+    permission_classes = (IsOwnerOrStaff,)
     queryset = CallRequest.objects.all()
 
 
@@ -177,8 +177,7 @@ class AgreedTimeSuggestionView(generics.UpdateAPIView):
             return Response(error, status=status.HTTP_400_BAD_REQUEST)
 
         call_request.agreed_time = agreed_time
-
-        # TODO schedule text messages to go out 15 min before the call with phone number
+        call_request.save()
 
         if request.user.is_hero():
             # Alert user that the hero agreed to a suggested time
@@ -186,6 +185,9 @@ class AgreedTimeSuggestionView(generics.UpdateAPIView):
         else:
             # Alert hero that the user agreed to a suggested time
             call_request.hero.send_agreed_time_email(call_request)
+
+        # schedule text messages to go out X min before the call for both the hero and the user
+        call_request.schedule_sms_reminders()
 
         serializer = self.serializer_class(call_request)
         return Response(serializer.data, status=status.HTTP_200_OK)
