@@ -15,8 +15,8 @@ require('babel-polyfill').default;
 const TARGET = process.env.npm_lifecycle_event;
 
 const PATHS = {
-    app: path.join(__dirname, '../src/static'),
-    build: path.join(__dirname, '../src/static_dist'),
+    app: path.join(__dirname, '../static'),
+    build: path.join(__dirname, '../static_dist'),
 };
 
 const VENDOR = [
@@ -49,7 +49,7 @@ const common = {
 
     plugins: [
         new HtmlWebpackPlugin({
-            template: path.join(__dirname, '../src/static/index.html'),
+            template: path.join(__dirname, '../static/index.html'),
             hash: true,
             filename: 'index.html',
             inject: 'body'
@@ -114,7 +114,7 @@ const common = {
     },
 
     sassLoader: {
-        data: `@import "${__dirname}/../src/static/styles/config/_variables.scss";`
+        data: `@import "${__dirname}/../static/styles/config/_variables.scss";`
     },
 
     postcss: (param) => {

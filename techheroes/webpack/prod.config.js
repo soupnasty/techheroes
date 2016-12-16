@@ -23,7 +23,8 @@ module.exports = {
             'process.env': {
                 NODE_ENV: '"production"'
             },
-            '__DEVELOPMENT__': false
+            '__DEVELOPMENT__': false,
+            '__DEVTOOLS__': false
         }),
         new ExtractTextPlugin('styles/[name].[contenthash].css'),
         new webpack.optimize.DedupePlugin(),

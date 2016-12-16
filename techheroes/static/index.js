@@ -1,18 +1,21 @@
 import 'babel-polyfill';
+import ApiClient from './helpers/ApiClient';
+import { authLoginUserSuccess } from './actions/auth';
+import { browserHistory } from 'react-router';
+import createStore from './redux/create';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { browserHistory } from 'react-router';
-import { syncHistoryWithStore } from 'react-router-redux';
-
 import Root from './containers/Root/Root';
-import configureStore from './store/configureStore';
-import { authLoginUserSuccess } from './actions/auth';
-
+import { syncHistoryWithStore } from 'react-router-redux';
+import useScroll from 'scroll-behavior/lib/useStandardScroll';
 
 const target = document.getElementById('root');
 
-const store = configureStore(window.INITIAL_STATE, browserHistory);
-const history = syncHistoryWithStore(browserHistory, store);
+// const store = configureStore(window.INITIAL_STATE, browserHistory);
+const client = new ApiClient();
+const _browserHistory = useScroll(() => browserHistory)();
+const store = createStore(_browserHistory, client, window.__data);
+const history = syncHistoryWithStore(_browserHistory, store);
 
 const node = (
     <Root store={store} history={history}/>

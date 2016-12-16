@@ -23,7 +23,8 @@ module.exports = {
             'process.env': {
                 NODE_ENV: '"development"'
             },
-            '__DEVELOPMENT__': true
+            '__DEVELOPMENT__': true,
+            '__DEVTOOLS__': true
         }),
         new ExtractTextPlugin('styles/[name].[contenthash].css'),
         new webpack.optimize.OccurrenceOrderPlugin()
