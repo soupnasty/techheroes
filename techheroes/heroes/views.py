@@ -1,7 +1,7 @@
 from django.db import IntegrityError
 from rest_framework import status, generics
 from rest_framework.exceptions import PermissionDenied
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 
 from accounts.models import User
@@ -9,16 +9,17 @@ from accounts.permissions import StaffOnly
 from utils.mixins import AtomicMixin
 
 from .models import Hero, HeroAcceptAction
-from .permissions import IsHeroOrStaff
+from .permissions import IsHeroOrStaff, VerifiedEmailandPhone
 from .serializers import (CreateUpdateHeroSerializer, HeroProfileSerializer, AcceptDeclineHeroSerializer,
     HeroAcceptActionSerializer, HeroSerializer, HeroDetailSerializer)
 
 
 class ApplyForHeroView(AtomicMixin, generics.GenericAPIView):
     """
-    POST: Create a new Hero instance that awaits acceptance
+    POST: Create a new Hero instance that awaits acceptance 
     """
     serializer_class = CreateUpdateHeroSerializer
+    permission_classes = (IsAuthenticated, VerifiedEmailandPhone)
 
     def post(self, request, *args, **kwargs):
         data = self.serializer_class(data=request.data)
@@ -35,7 +36,7 @@ class ApplyForHeroView(AtomicMixin, generics.GenericAPIView):
 
 
 class RetrieveUpdateHeroView(generics.RetrieveUpdateAPIView):
-    serializer_class = HeroDetailSerializer
+    serializer_class = HeroProfileSerializer
 
     def get_object(self):
         if self.request.user.is_hero():

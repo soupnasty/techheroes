@@ -34,6 +34,7 @@ There are a few configurations managed as environment variables. In the developm
 ## API Table of Contents
 
 #### User Routes
+- [Create a phone token](#create-a-phone-token)
 - [Register a new user](#register-a-new-user)
 - [Login a user](#login-a-user)
 - [Logout a user](#logout-a-user)
@@ -60,15 +61,43 @@ There are a few configurations managed as environment variables. In the developm
 - [Decline a call request](#decline-a-call-request)
 - [Suggest new times](#suggest-new-times)
 - [Accept time](#accept-time)
-- [Get Call Request detail](#get-call-request-detail)
 - [Get Call Request list](#get-call-request-list)
+- [Get Call Request detail](#get-call-request-detail)
 
 
 ## API Routes
 
 
 ### User Routes
-Users only require first_name, last_name, email and password to create an account. After creating an account, a user will have to verify their email address by clicking a link sent to their email (EMAIL VERIFICATION HAS NOT BEEN IMPLEMENTED YET). This applies to both Heroes and Users.
+Users require a first_name, last_name, email, password, phone, phone_token and timezone to create an account. After creating an account, a user will have to verify their email address by clicking a link sent to their email. This applies to both Heroes and Users.
+
+
+#### Create a phone token
+
+**POST:** `/api/v1/accounts/phone-token`
+
+**Notes:**
+- `phone`: A ten-digit US phone number as string
+
+**Body:**
+```json
+{
+    "phone": "5555555555"
+}
+```
+
+**Response:**
+```json
+{
+    "phone_token": "abc123"
+}
+```
+
+**Status Codes:**
+- `201` if successfully created
+- `400` if the phone is already verified with another user or phone token already exists
+- `424` twilio failed to send a message to the provided phone number
+
 
 #### Register a new user
 
@@ -77,7 +106,9 @@ Users only require first_name, last_name, email and password to create an accoun
 **Notes:**
 - `email`: user's email address, must be unique (string)
 - `password`: must be at least 8 chars with at least 1 number (string)
-- `timezone` of the user. We need this so we can inform users the timezone the hero they are requesting is in and vice versa. Also need their timezone to format the UTC times to their aware local time.
+- `phone`: A ten-digit US phone number as string
+- `phone_token`: 6 character combinations of lowercase letters and digits
+- `timezone`: We need this so we can inform users the timezone the hero they are requesting is in and vice versa. Also need their timezone to format the UTC times to their aware local time.
 
 **Body:**
 ```json
@@ -86,6 +117,8 @@ Users only require first_name, last_name, email and password to create an accoun
     "last_name": "Newton",
     "email": "test@test.com",
     "password": "password1",
+    "phone": "5555555555",
+    "phone_token": "abc123",
     "timezone": "America/Chicago"
 }
 ```
@@ -98,11 +131,11 @@ Users only require first_name, last_name, email and password to create an accoun
     "last_name": "Newton",
     "email": "test@test.com",
     "email_verified": false,
-    "email_notifications": false,
-    "phone": null,
-    "phone_verified": false,
+    "email_notifications": true,
+    "phone": "5555555555",
+    "phone_verified": true,
     "profile_image": null,
-    "is_active": false,
+    "is_active": true,
     "email_pending": "test@test.com",
     "phone_pending": null,
     "timezone": "America/Chicago",
@@ -138,11 +171,11 @@ Users only require first_name, last_name, email and password to create an accoun
     "last_name": "Newton",
     "email": "test@test.com",
     "email_verified": false,
-    "email_notifications": false,
-    "phone": null,
-    "phone_verified": false,
+    "email_notifications": true,
+    "phone": "5555555555",
+    "phone_verified": true,
     "profile_image": null,
-    "is_active": false,
+    "is_active": true,
     "email_pending": "test@test.com",
     "phone_pending": null,
     "timezone": "America/Chicago",
@@ -183,16 +216,16 @@ Users only require first_name, last_name, email and password to create an accoun
     "last_name": "Newton",
     "email": "test@test.com",
     "email_verified": false,
-    "email_notifications": false,
-    "phone": null,
-    "phone_verified": false,
+    "email_notifications": true,
+    "phone": "5555555555",
+    "phone_verified": true,
     "profile_image": null,
-    "is_active": false,
+    "is_active": true,
     "email_pending": "test@test.com",
     "phone_pending": null,
     "timezone": "America/Chicago",
     "created": "2016-11-16T15:56:56.179930Z",
-    "updated": "2016-11-16T15:59:09.189275Z"
+    "updated": "2016-11-16T15:59:09.189275Z",
 }
 ```
 
@@ -207,7 +240,6 @@ Users only require first_name, last_name, email and password to create an accoun
 **PATCH:** `/api/v1/accounts/profile`
 
 **Notes:**
-- `phone`: A ten-digit US phone number as string
 - When a user updates `email`, the user will receive a verification email. `email_verified` will remain false and `email` will remain their old email until the user verifies their email token.
 - `email_pending`: this is the email that is awaiting to be saved for the user once they verify
 - When a user updates `phone`, the user will receive a verification text. `phone_verified` will remain false and `phone` will remain null until the user verifies their phone token.
@@ -501,6 +533,7 @@ After creating a user account and verifying their email, a user can apply to be 
 **Status Codes:**
 - `201` if successfully created
 - `400` if incorrect data is provided
+- `403` if user does not have a verified email and phone
 - `409` if the email already exist
 
 
@@ -789,7 +822,7 @@ Call requests are what users make to any hero they desire. The user has to be au
 **Notes:**
 - `hero_id`: the hero's id (UUID)
 - `message`: a summary or reason for the call
-- `estimated_length`: the approximate time for the call in minutes
+- `estimated_length`: the approximate time for the call in minutes (must be in 15 min interval with a max of 120)
 
 **Body:**
 ```json
@@ -1043,48 +1076,6 @@ Call requests are what users make to any hero they desire. The user has to be au
 - `403` if the user is not a hero
 
 
-#### Get Call Request detail
-
-**GET:** `/api/v1/call-requests/:call_request_id`
-
-**Response:**
-```json
-{
-    "id": 1,
-    "user": "fd6494d8-e684-4f4b-960c-c83f56d1d790",
-    "hero": 1,
-    "message": "This is a general summary or reason for the call",
-    "estimated_length": 15,
-    "status": "a",
-    "reason": "",
-    "times": [
-      {
-       "user": {
-         "id": "b6513c6f-e3b5-4c00-ae10-1b78950d8c8a",
-         "first_name": "Tom",
-         "last_name": "Brady",
-         "profile_image": "https://media.licdn.com/mpr/mpr/shrink_100_100/p/5/005/040/0cd/008cf89.jpg",
-         "timezone": "America/Chicago",
-         "created": "2016-12-03T00:23:57.364198Z"
-       },
-       "datetime_one": "2017-12-25T06:00:00.000000Z",
-       "datetime_two": "2017-12-25T07:30:00.000000Z",
-       "datetime_three": "2017-12-25T08:30:00.000000Z",
-       "timestamp": "2016-12-05T17:04:23.659493Z"
-     },
-    ],
-    "agreed_time": "2016-11-17T22:06:00.000000Z",
-    "created": "2016-11-17T22:06:50.108634Z",
-    "updated": "2016-12-05T17:37:05.617390Z"
-}
-```
-
-**Status Codes:**
-- `200` if successful
-- `403` if the user is not the user or hero in call request
-- `404` if call request with provided id is not found
-
-
 #### Get Call Request list
 
 **GET:** `/api/v1/call-requests/`
@@ -1131,4 +1122,47 @@ Call requests are what users make to any hero they desire. The user has to be au
 
 **Status Codes:**
 - `200` if successful
+- `403` if unauthenticated
+
+
+#### Get Call Request detail
+
+**GET:** `/api/v1/call-requests/:call_request_id`
+
+**Response:**
+```json
+{
+    "id": 1,
+    "user": "fd6494d8-e684-4f4b-960c-c83f56d1d790",
+    "hero": 1,
+    "message": "This is a general summary or reason for the call",
+    "estimated_length": 15,
+    "status": "a",
+    "reason": "",
+    "times": [
+      {
+       "user": {
+         "id": "b6513c6f-e3b5-4c00-ae10-1b78950d8c8a",
+         "first_name": "Tom",
+         "last_name": "Brady",
+         "profile_image": "https://media.licdn.com/mpr/mpr/shrink_100_100/p/5/005/040/0cd/008cf89.jpg",
+         "timezone": "America/Chicago",
+         "created": "2016-12-03T00:23:57.364198Z"
+       },
+       "datetime_one": "2017-12-25T06:00:00.000000Z",
+       "datetime_two": "2017-12-25T07:30:00.000000Z",
+       "datetime_three": "2017-12-25T08:30:00.000000Z",
+       "timestamp": "2016-12-05T17:04:23.659493Z"
+     },
+    ],
+    "agreed_time": "2016-11-17T22:06:00.000000Z",
+    "created": "2016-11-17T22:06:50.108634Z",
+    "updated": "2016-12-05T17:37:05.617390Z"
+}
+```
+
+**Status Codes:**
+- `200` if successful
+- `403` if the user is not the user or hero in call request
+- `404` if call request with provided id is not found
 
