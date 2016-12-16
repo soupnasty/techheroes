@@ -843,7 +843,7 @@ After creating a user account and verifying their email, a user can apply to be 
 
 
 ### Call Request Routes
-Call requests are what users make to any hero they desire. The user has to have a verified email and verified phone before they can make a call request.
+Call requests are what users make to any hero they desire. The user has to have a verified email and verified phone before they can make a call request. If the user does not have payment info stored, the front end should ask for payment info after the user submits the request.
 
 #### Create a call request
 
@@ -854,18 +854,14 @@ Call requests are what users make to any hero they desire. The user has to have 
 {
   	"hero_id":"b55dcf4a-e723-495e-b920-738c4b6d221d",
     "message": "This is a general summary or reason for the call",
-    "estimated_length": 15,
-    "datetime_one": "2016-11-17T22:06:00.000000Z",
-    "datetime_two": "2016-11-17T22:06:15.000000Z",
-    "datetime_three": "2016-11-17T22:06:30.000000Z"
+    "estimated_length": 15
 }
 ```
 
 **Notes:**
 - `hero_id`: the hero's id (UUID)
 - `message`: a summary or reason for the call
-- `estimated_length`: the approximate time for the call in minutes
-- `datetime_one`, `datetime_two` and `datetime_three` are UTC datetimes the user suggested for the call
+- `estimated_length`: the approximate time for the call in minutes (15 min intervals)
 
 **Response:**
 ```json
@@ -875,10 +871,8 @@ Call requests are what users make to any hero they desire. The user has to have 
     "hero": "b55dcf4a-e723-495e-b920-738c4b6d221d",
     "message": "This is a general summary or reason for the call",
     "estimated_length": 15,
-    "datetime_one": "2016-11-17T22:06:00.000000Z",
-    "datetime_two": "2016-11-17T22:06:15.000000Z",
-    "datetime_three": "2016-11-17T22:06:30.000000Z",
-    "expired": false,
+    "closed": false,
+    ""
     "created": "2016-11-17T22:06:50.108634Z"
 }
 ```
@@ -887,4 +881,3 @@ Call requests are what users make to any hero they desire. The user has to have 
 - `200` if successful
 - `400` if incorrect data is provided
 - `403` if the user is not staff
-
