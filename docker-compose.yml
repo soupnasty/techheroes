@@ -32,11 +32,13 @@ services:
         build:
             context: .
             dockerfile: ./docker/web/Dockerfile
-        command: bash -c "yarn && npm run dev"
+        command: npm run dev
         links:
           - django
         volumes:
           - .:/src
+        ports:
+          - "8080:8080"
 
     worker:
         restart: always
