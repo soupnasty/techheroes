@@ -1,17 +1,22 @@
 version: '2'
 services:
     db:
+        restart: always
         image: postgres
         ports:
           - "5432:5432"
 
     redis:
+        restart: always
         image: redis
         ports:
           - "6379:6379"
 
-    web:
-        build: .
+    django:
+        restart: always
+        build:
+            context: .
+            dockerfile: ./docker/django/Dockerfile
         command: python manage.py runserver 0.0.0.0:8000
         depends_on:
           - db
@@ -22,8 +27,22 @@ services:
         env_file:
           - ./env/dev.txt
 
+    web:
+        restart: always
+        build:
+            context: .
+            dockerfile: ./docker/web/Dockerfile
+        command: bash -c "yarn && npm run dev"
+        links:
+          - django
+        volumes:
+          - .:/src
+
     worker:
-        build: .
+        restart: always
+        build:
+            context: .
+            dockerfile: ./docker/django/Dockerfile
         command: python manage.py qcluster
         depends_on:
           - db
