@@ -22,6 +22,7 @@ class CreateListCallRequestView(generics.ListCreateAPIView):
     GET: Get a list of call requests related to the user
     """
     serializer_class = CallRequestSerializer
+    # TODO Include a permissions class that checks email_verified, phone_verified and payment_verified
 
     def get_queryset(self):
         if self.request.user.is_hero():
@@ -32,19 +33,6 @@ class CreateListCallRequestView(generics.ListCreateAPIView):
     def post(self, request, *args, **kwargs):
         data = CreateCallRequestSerializer(data=request.data)
         data.is_valid(raise_exception=True)
-
-        # Uncomment this when verification is needed
-        # if not request.user.email_verified:
-        #     error = {'detail': 'User must have a verified email address.'}
-        #     return Response(error, status=status.HTTP_403_FORBIDDEN)
-        #
-        # if not request.user.phone_verified:
-        #     error = {'detail': 'User must have a verified phone number.'}
-        #     return Response(error, status=status.HTTP_403_FORBIDDEN)
-        #
-        # if not request.user.payment_verified:
-        #     error = {'detail': 'User must have a verified payment method.'}
-        #     return Response(error, status=status.HTTP_403_FORBIDDEN)
 
         hero = Hero.objects.get(id=data.validated_data['hero_id'])
         if CallRequest.objects.filter(user=request.user, hero=hero, status=CallRequest.OPEN).exists():
@@ -112,6 +100,7 @@ class DeclineCallRequestHeroView(generics.UpdateAPIView):
 
         call_request.status = CallRequest.DECLINED
         call_request.reason = data.validated_data['reason']
+        call_request.save()
 
         # Alert user that the Hero responded to request
         call_request.user.send_hero_declined_call_request_email(call_request)

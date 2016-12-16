@@ -24,6 +24,13 @@ class ApplyForHeroView(AtomicMixin, generics.GenericAPIView):
         data = self.serializer_class(data=request.data)
         data.is_valid(raise_exception=True)
 
+        if not request.user.email_verified:
+            error = {'detail': 'User must have a verified email address.'}
+            return Response(error, status=status.HTTP_403_FORBIDDEN)
+        if not request.user.phone_verified:
+            error = {'detail': 'User must have a verified phone number.'}
+            return Response(error, status=status.HTTP_403_FORBIDDEN)
+
         try:
             new_hero = Hero.objects.create_hero(user=request.user, data=data.validated_data)
         except IntegrityError:
@@ -35,7 +42,7 @@ class ApplyForHeroView(AtomicMixin, generics.GenericAPIView):
 
 
 class RetrieveUpdateHeroView(generics.RetrieveUpdateAPIView):
-    serializer_class = HeroDetailSerializer
+    serializer_class = HeroProfileSerializer
 
     def get_object(self):
         if self.request.user.is_hero():

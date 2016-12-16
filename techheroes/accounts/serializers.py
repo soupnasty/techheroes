@@ -1,9 +1,28 @@
 from rest_framework import serializers
 
+from authentication.models import PhoneToken
 from utils.validation import (valid_email, valid_phone, valid_password, valid_email_token,
     valid_phone_token, valid_password_token, LowerEmailField)
 
 from .models import User
+
+
+class CreatePhoneTokenSerializer(serializers.Serializer):
+    phone = serializers.CharField(validators=[valid_phone])
+
+    def validate_phone(self, value):
+        # Check if this phone number exists with a verified user
+        if User.objects.filter(phone=value, phone_verified=True).exists():
+            raise serializers.ValidationError('Phone already in use, please use a different phone number.')
+
+        # Check if there is already a nonexpired PhoneToken for this user
+        if PhoneToken.objects.filter(phone=value).exists():
+            phone_tokens = PhoneToken.objects.filter(phone=value)
+            for pt in phone_tokens:
+                if not pt.is_expired():
+                    raise serializers.ValidationError('A phone token already exists for this phone. Check your messages.')
+
+        return value
 
 
 class RegisterUserSerializer(serializers.Serializer):
@@ -11,12 +30,22 @@ class RegisterUserSerializer(serializers.Serializer):
     first_name = serializers.CharField()
     last_name = serializers.CharField()
     password = serializers.CharField(validators=[valid_password])
+    phone = serializers.CharField(validators=[valid_phone])
+    phone_token = serializers.CharField(min_length=6, max_length=6, validators=[valid_phone_token])
+    timezone = serializers.CharField()
 
-    def validate_email(self, value):
-        """Check if user with this email already exists"""
-        if User.objects.filter(email=value).exists():
+    def validate(self, data):
+        # Check if user with this email already exists
+        if User.objects.filter(email=data['email']).exists():
             raise serializers.ValidationError('Email already in use, please use a different email address.')
-        return value
+
+        # Check if there is a PhoneToken instance
+        if not PhoneToken.objects.filter(phone=data['phone'], token=data['phone_token']).exists():
+            raise serializers.ValidationError('Phone token is not valid.')
+
+        # Dont need phone_token anymore
+        data.pop('phone_token')
+        return data
 
 
 class LoginUserSerializer(serializers.Serializer):
@@ -30,11 +59,11 @@ class LoginUserSerializer(serializers.Serializer):
         return value
 
 
-class VerifyEmailTokenSerializer(serializers.Serializer):
+class EmailTokenSerializer(serializers.Serializer):
     token = serializers.CharField(min_length=10, max_length=10, validators=[valid_email_token])
 
 
-class VerifyPhoneTokenSerializer(serializers.Serializer):
+class PhoneTokenSerializer(serializers.Serializer):
     token = serializers.CharField(min_length=6, max_length=6, validators=[valid_phone_token])
 
 

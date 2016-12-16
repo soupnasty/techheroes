@@ -65,7 +65,8 @@ class CallRequest(models.Model):
             next_run = self.agreed_time - timezone.timedelta(minutes=settings.SMS_REMINDER_TIME_IN_MIN)
 
             schedule(
-                'accounts.User.send_sms',
+                'utils.send_sms',
+                user.phone,
                 message,
                 schedule_type=Schedule.ONCE,
                 next_run=next_run

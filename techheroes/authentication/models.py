@@ -106,7 +106,7 @@ class EmailToken(VerificationToken):
 class PhoneToken(VerificationToken):
     TOKEN_LENGTH = 6
 
-    user = models.OneToOneField(settings.AUTH_USER_MODEL, related_name='phone_token', on_delete=models.CASCADE)
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, related_name='phone_token', on_delete=models.CASCADE, null=True)
     phone = models.CharField(max_length=10)
 
     class Meta:

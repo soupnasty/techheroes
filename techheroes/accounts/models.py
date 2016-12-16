@@ -17,12 +17,13 @@ from .emails import get_email
 
 
 class UserManager(BaseUserManager):
-    def _create_user(self, email, password, first_name, last_name, is_staff, **extra_fields):
+    def _create_user(self, email, first_name, last_name, password, phone, timezone, is_staff, **extra_fields):
         """
         Create and save an User with the given email, password and name.
         """
         email = self.normalize_email(email)
         user = self.model(email=email, first_name=first_name, last_name=last_name,
+                            phone=phone, phone_verified=True, timezone=timezone,
                             is_staff=is_staff, is_active=True, **extra_fields)
         user.set_password(password)
         user.save(using=self._db)
@@ -31,17 +32,11 @@ class UserManager(BaseUserManager):
         AuthToken.objects.create(user=user)
         return user
 
-    def create_user(self, email, first_name, last_name, password, **extra_fields):
+    def create_user(self, email, first_name, last_name, password, phone, timezone, **extra_fields):
         """
-        Create and save an User with the given email, password and name.
+        Create and save an User with the given email, password, name, phone and timezone.
         """
-        return self._create_user(email, password, first_name, last_name, is_staff=False, **extra_fields)
-
-    def create_staff(self, email, first_name='', last_name='', password=None, **extra_fields):
-        """
-        Create a super user.
-        """
-        return self._create_user(email, password, first_name, last_name, is_staff=True, **extra_fields)
+        return self._create_user(email, first_name, last_name, password, phone, timezone, is_staff=False, **extra_fields)
 
 
 class User(AbstractBaseUser):
