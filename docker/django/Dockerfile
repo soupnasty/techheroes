@@ -1,12 +1,17 @@
 FROM python:3.5
 MAINTAINER Andrew Campbell
 
-# install app dependencies
+# Ensure that Python outputs everything that's printed inside
+# the application rather than buffering it.
+ENV PYTHONUNBUFFERED 1
+
+# install dependencies
 RUN apt-get update -qy && \
     apt-get install -y libpq-dev python-psycopg2
 
-# install requirements here for caching
+# install requirements
 COPY ./requirements.txt /requirements.txt
+RUN pip install pip==9.0.1
 RUN pip install -r requirements.txt
 
 COPY . /src

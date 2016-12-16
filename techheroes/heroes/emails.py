@@ -19,7 +19,7 @@ def get_email(context):
         'user_agreed_to_time': lambda: user_agreed_to_time(context),
     }
 
-    return messages.get(context['type'], lambda: email_error(context))()
+    return messages.get(context['type'], lambda: email_error(context))() 
 
 
 def email_error(context):
