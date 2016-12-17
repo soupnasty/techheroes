@@ -1165,5 +1165,3 @@ Call requests are what users make to any hero they desire. The user has to be au
 - `200` if successful
 - `403` if the user is not the user or hero in call request
 - `404` if call request with provided id is not found
-
->>>>>>> 00879a6b1e9278107aea548f691f5e17b195c37c
