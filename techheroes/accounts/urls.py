@@ -4,6 +4,7 @@ from accounts import views
 
 
 urlpatterns = [
+    url(r'^phone-token/?$', views.CreatePhoneTokenView.as_view(), name='create_phone_token'),
     url(r'^register/?$', views.RegisterUserView.as_view(), name='register_user'),
     url(r'^login/?$', views.LoginUserView.as_view(), name='login'),
     url(r'^logout/?$', views.LogoutUserView.as_view(), name='logout'),

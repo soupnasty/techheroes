@@ -1,0 +1,9 @@
+{{ header }}
+
+{{ text_content }}
+
+{% if cta %}{{ cta }}: {{ cta_link }}{% endif %}
+
+
+---------------------------------------------
+Please do not reply to this message; it was sent from an unmonitored email address. This message is from Tech Heroes.

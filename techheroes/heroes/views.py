@@ -1,7 +1,7 @@
 from django.db import IntegrityError
 from rest_framework import status, generics
 from rest_framework.exceptions import PermissionDenied
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 
 from accounts.models import User
@@ -9,23 +9,24 @@ from accounts.permissions import StaffOnly
 from utils.mixins import AtomicMixin
 
 from .models import Hero, HeroAcceptAction
-from .permissions import IsHeroOrStaff
-from .serializers import (CreateUpdateHeroSerializer, HeroDetailSerializer, AcceptDeclineHeroSerializer,
-    HeroAcceptActionSerializer, HeroSerializer)
+from .permissions import IsHeroOrStaff, VerifiedEmailandPhone
+from .serializers import (CreateUpdateHeroSerializer, HeroProfileSerializer, AcceptDeclineHeroSerializer,
+    HeroAcceptActionSerializer, HeroSerializer, HeroDetailSerializer)
 
 
 class ApplyForHeroView(AtomicMixin, generics.GenericAPIView):
     """
-    POST: Create a new Hero instance that awaits acceptance
+    POST: Create a new Hero instance that awaits acceptance 
     """
     serializer_class = CreateUpdateHeroSerializer
+    permission_classes = (IsAuthenticated, VerifiedEmailandPhone)
 
     def post(self, request, *args, **kwargs):
         data = self.serializer_class(data=request.data)
         data.is_valid(raise_exception=True)
 
         try:
-            new_hero = Hero.objects.create(user=request.user, **data.validated_data)
+            new_hero = Hero.objects.create_hero(user=request.user, data=data.validated_data)
         except IntegrityError:
             error = {'detail': 'User has already applied to become a Hero.'}
             return Response(error, status=status.HTTP_409_CONFLICT)
@@ -35,7 +36,7 @@ class ApplyForHeroView(AtomicMixin, generics.GenericAPIView):
 
 
 class RetrieveUpdateHeroView(generics.RetrieveUpdateAPIView):
-    serializer_class = HeroDetailSerializer
+    serializer_class = HeroProfileSerializer
 
     def get_object(self):
         if self.request.user.is_hero():
@@ -72,6 +73,8 @@ class AcceptHeroView(generics.CreateAPIView):
         hero.accepted = True
         hero.save()
 
+        hero.send_acceptance_email()
+
         accept_action = HeroAcceptAction.objects.create(user=request.user, hero=hero, accepted=hero.accepted)
         serializer = HeroAcceptActionSerializer(accept_action)
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -100,5 +103,11 @@ class DeclineHeroView(generics.CreateAPIView):
 
 class GetHeroListView(generics.ListAPIView):
     serializer_class = HeroSerializer
+    permission_classes = (AllowAny,)
+    queryset = Hero.objects.filter(accepted=True)
+
+
+class GetHeroDetailView(generics.RetrieveAPIView):
+    serializer_class = HeroDetailSerializer
     permission_classes = (AllowAny,)
     queryset = Hero.objects.filter(accepted=True)

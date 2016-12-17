@@ -5,19 +5,16 @@ from accounts.serializers import LimitedUserSerializer, UserSerializer
 from .models import Hero, HeroAcceptAction
 
 
-class HeroSkillSerializer(serializers.Serializer):
-    name = serializers.CharField(max_length=25)
-    years = serializers.IntegerField(min_value=1)
-
-
 class CreateUpdateHeroSerializer(serializers.Serializer):
     discipline = serializers.CharField(max_length=2)
-    short_bio = serializers.CharField(max_length=200)
-    resume = serializers.CharField()
+    title = serializers.CharField(max_length=50)
+    description = serializers.CharField(max_length=1000)
+    position = serializers.CharField(max_length=25)
+    company = serializers.CharField(max_length=25)
+    short_bio = serializers.CharField(max_length=2000)
     years_of_exp = serializers.IntegerField(min_value=1)
     rate_in_cents = serializers.IntegerField(min_value=0)
     linkedin_url = serializers.URLField()
-    skills = HeroSkillSerializer(many=True)
 
     def validate_discipline(self, value):
         """Validate if discipline is one of the choices"""
@@ -26,30 +23,32 @@ class CreateUpdateHeroSerializer(serializers.Serializer):
             raise serializers.ValidationError('Discipline must be in {}'.format(disciplines))
         return value
 
-    def validate(self, data):
-        max_skill = max(data['skills'], key=lambda x: x['years'])
-        if data['years_of_exp'] < max_skill['years']:
-            raise serializers.ValidationError('Total years of experience must be greater than or equal to any skill years')
-        return data
-
 
 class HeroSerializer(serializers.ModelSerializer):
     user = LimitedUserSerializer(many=False)
 
     class Meta:
         model = Hero
-        fields = ('id', 'user', 'discipline', 'short_bio', 'resume', 'years_of_exp',
-                        'rate_in_cents', 'skills', 'accepted', 'linkedin_url', 'created', 'updated')
-        read_only_fields = ('id', 'accepted', 'created', 'updated')
+        fields = ('id', 'user', 'slug', 'discipline', 'title', 'description', 'position', 'company',
+                    'years_of_exp', 'rate_in_cents', 'created', 'updated')
+        read_only_fields = ('id', 'created', 'updated')
 
 
 class HeroDetailSerializer(HeroSerializer):
+
+    class Meta:
+        model = Hero
+        fields = ('id', 'user', 'slug', 'discipline', 'title', 'description', 'position', 'company', 'short_bio',
+                    'years_of_exp', 'rate_in_cents', 'linkedin_url', 'created', 'updated')
+
+
+class HeroProfileSerializer(HeroSerializer):
     user = UserSerializer(many=False)
 
     class Meta:
         model = Hero
-        fields = ('id', 'user', 'discipline', 'short_bio', 'resume', 'years_of_exp',
-                    'rate_in_cents', 'skills', 'accepted', 'linkedin_url', 'created', 'updated')
+        fields = ('id', 'user', 'slug', 'discipline', 'title', 'description', 'position', 'company', 'short_bio',
+                    'years_of_exp', 'rate_in_cents', 'linkedin_url', 'created', 'updated')
 
 
 class AcceptDeclineHeroSerializer(serializers.Serializer):
