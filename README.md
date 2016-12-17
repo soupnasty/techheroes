@@ -30,7 +30,7 @@ There are a few configurations managed as environment variables. In the developm
 5. You can make backend changes and save while the server is up
 
 ## Frontend local development workflow
-[Helpful frontend Docker workflow article](https://medium.com/@tribou/react-and-flux-a-docker-development-workflow-469957f3bbf0#.wko4im9d1)
+0. [Helpful frontend Docker workflow article](https://medium.com/@tribou/react-and-flux-a-docker-development-workflow-469957f3bbf0#.wko4im9d1)
 1. Add dependencies to package.json file
 2. Run `docker-compose run web npm install` download the node_modules locally
 3. Make front end changes and test them manually
