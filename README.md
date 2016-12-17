@@ -10,6 +10,7 @@ There are a few configurations managed as environment variables. In the developm
 
 * `DATABASE_URL` - This is the connection URL for the PostgreSQL database. It is not used in the **development environment**.
 * `SECRET_KEY` - This is a secret string. It is used to encrypt and verify the authentication token on routes that require authentication. This is required. The app won't start without it.
+* `DEBUG` - This boolean tells Django to return descriptive error functions for development
 
 
 ## Steps to get Docker setup
@@ -20,8 +21,20 @@ There are a few configurations managed as environment variables. In the developm
 5. Start the machine `docker-machine start myBoxName`
 6. Allow docker-machine commands to be used in terminal `eval "$(docker-machine env myBoxName)"`
 7. Make sure the machine is running `docker-machine ls`
-8. Run `docker-compose build` to build the image
-3. Run 'docker-machine ip' to check the local server's ip
+
+## Backend local development workflow
+1. Make sure you are in the directory with the docker-compose.yml
+2. Run `docker-compose build` (only if new dependencies were added)
+3. Run `docker-compose run django python manage.py migrate` (only if new migrations are needed)
+4. Run `docker-compose up`
+5. You can make backend changes and save while the server is up
+
+## Frontend local development workflow
+[Helpful frontend Docker workflow article](https://medium.com/@tribou/react-and-flux-a-docker-development-workflow-469957f3bbf0#.wko4im9d1)
+1. Add dependencies to package.json file
+2. Run `docker-compose run web npm install` download the node_modules locally
+3. Make front end changes and test them manually
+4. Run `docker-compose up` to test the system as a whole in prod-like environment
 
 ## Steps to setup api server locally
 1. Run `docker-compose run web python manage.py migrate` to make initial migrations
@@ -1165,4 +1178,3 @@ Call requests are what users make to any hero they desire. The user has to be au
 - `200` if successful
 - `403` if the user is not the user or hero in call request
 - `404` if call request with provided id is not found
-

@@ -1,22 +1,18 @@
 version: '2'
 services:
     db:
-        restart: always
         image: postgres
         ports:
           - "5432:5432"
 
     redis:
-        restart: always
         image: redis
         ports:
           - "6379:6379"
 
     django:
-        restart: always
-        build:
-            context: .
-            dockerfile: ./docker/django/Dockerfile
+        build: .
+        image: techheroes/django
         command: python manage.py runserver 0.0.0.0:8000
         depends_on:
           - db
@@ -28,23 +24,17 @@ services:
           - ./env/dev.txt
 
     web:
-        restart: always
-        build:
-            context: .
-            dockerfile: ./docker/web/Dockerfile
+        image: node:6.9.2-onbuild
         command: npm run dev
         links:
           - django
         volumes:
-          - .:/src
+          - .:/usr/src/app/
         ports:
-          - "8080:8080"
+          - "3000:3000"
 
     worker:
-        restart: always
-        build:
-            context: .
-            dockerfile: ./docker/django/Dockerfile
+        image: techheroes/django
         command: python manage.py qcluster
         depends_on:
           - db
