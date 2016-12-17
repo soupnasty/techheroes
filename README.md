@@ -813,11 +813,7 @@ After creating a user account and verifying their email, a user can apply to be 
 
 
 ### Call Request Routes
-<<<<<<< HEAD
-Call requests are what users make to any hero they desire. The user has to have a verified email and verified phone before they can make a call request. If the user does not have payment info stored, the front end should ask for payment info after the user submits the request.
-=======
 Call requests are what users make to any hero they desire. The user has to be authenticated, have a verified email and phone and a verified form of payment.
->>>>>>> 00879a6b1e9278107aea548f691f5e17b195c37c
 
 #### Create a call request
 
@@ -847,9 +843,6 @@ Call requests are what users make to any hero they desire. The user has to be au
     "user": "fd6494d8-e684-4f4b-960c-c83f56d1d790",
     "hero": 1,
     "message": "This is a general summary or reason for the call",
-<<<<<<< HEAD
-    "estimated_length": 15
-=======
     "estimated_length": 15,
     "status": "o",
     "reason": "",
@@ -857,7 +850,6 @@ Call requests are what users make to any hero they desire. The user has to be au
     "agreed_time": null,
     "created": "2016-11-17T22:06:50.108634Z",
     "updated": "2016-11-17T22:06:50.108634Z"
->>>>>>> 00879a6b1e9278107aea548f691f5e17b195c37c
 }
 ```
 
@@ -1020,7 +1012,6 @@ Call requests are what users make to any hero they desire. The user has to be au
       },
     ],
     "agreed_time": null,
->>>>>>> 00879a6b1e9278107aea548f691f5e17b195c37c
     "created": "2016-11-17T22:06:50.108634Z"
 }
 ```
@@ -1028,9 +1019,6 @@ Call requests are what users make to any hero they desire. The user has to be au
 **Status Codes:**
 - `200` if successful
 - `400` if incorrect data is provided
-<<<<<<< HEAD
-- `403` if the user is not staff
-=======
 - `403` if the user is not authenticated
 - `409` if the datetime already exists
 
