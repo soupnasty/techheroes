@@ -3,17 +3,17 @@ from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from rest_framework import status, generics
 from rest_framework.exceptions import PermissionDenied
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 
 from accounts.models import User
 from heroes.models import Hero
 from heroes.permissions import IsHeroOrStaff
 
-from .models import CallRequest, TimeSuggestion
+from .models import CallRequest, TimeSuggestion, CanceledCallRequestLog
 from .permissions import IsOwnerOrStaff
 from .serializers import (CreateCallRequestSerializer, CallRequestSerializer,
-    TimesSerializer, DeclineReasonSerializer, AgreedTimeSerializer)
+    TimesSerializer, DeclineReasonSerializer, AgreedTimeSerializer, CancelCallRequestLogSerializer)
 
 
 class CreateListCallRequestView(generics.ListCreateAPIView):
@@ -51,13 +51,13 @@ class CreateListCallRequestView(generics.ListCreateAPIView):
 
 class RetrieveCallRequestView(generics.RetrieveAPIView):
     serializer_class = CallRequestSerializer
-    permission_classes = (IsOwnerOrStaff,)
+    permission_classes = (IsAuthenticated, IsOwnerOrStaff,)
     queryset = CallRequest.objects.all()
 
 
 class AcceptCallRequestHeroView(generics.UpdateAPIView):
     serializer_class = CallRequestSerializer
-    permission_classes = (IsHeroOrStaff, IsOwnerOrStaff)
+    permission_classes = (IsAuthenticated, IsHeroOrStaff, IsOwnerOrStaff)
 
     def patch(self, request, *args, **kwargs):
         data = TimesSerializer(data=request.data)
@@ -87,7 +87,7 @@ class AcceptCallRequestHeroView(generics.UpdateAPIView):
 
 class DeclineCallRequestHeroView(generics.UpdateAPIView):
     serializer_class = CallRequestSerializer
-    permission_classes = (IsHeroOrStaff, IsOwnerOrStaff)
+    permission_classes = (IsAuthenticated, IsHeroOrStaff, IsOwnerOrStaff)
 
     def patch(self, request, *args, **kwargs):
         data = DeclineReasonSerializer(data=request.data)
@@ -111,7 +111,7 @@ class DeclineCallRequestHeroView(generics.UpdateAPIView):
 
 class NewTimeSuggestionsView(generics.UpdateAPIView):
     serializer_class = CallRequestSerializer
-    permission_classes = (IsOwnerOrStaff,)
+    permission_classes = (IsAuthenticated, IsOwnerOrStaff,)
 
     def patch(self, request, *args, **kwargs):
         data = TimesSerializer(data=request.data)
@@ -143,7 +143,7 @@ class NewTimeSuggestionsView(generics.UpdateAPIView):
 
 class AgreedTimeSuggestionView(generics.UpdateAPIView):
     serializer_class = CallRequestSerializer
-    permission_classes = (IsOwnerOrStaff,)
+    permission_classes = (IsAuthenticated, IsOwnerOrStaff,)
 
     def patch(self, request, *args, **kwargs):
         data = AgreedTimeSerializer(data=request.data)
@@ -182,8 +182,25 @@ class AgreedTimeSuggestionView(generics.UpdateAPIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
+class CancelCallRequestView(generics.GenericAPIView)
+    serializer_class = CancelCallRequestLogSerializer
+    permission_classes = (IsAuthenticated, IsOwnerOrStaff,)
 
+    def post(self, request, *args, **kwargs):
+        data = DeclineReasonSerializer(data=request.data)
+        data.is_valid(raise_exception=True)
 
+        call_request = get_object_or_404(CallRequest, id=kwargs['pk'])
+
+        if
+
+        if call_request.hero.user == request.user:
+            # The hero is canceling the call
+        elif call_request.user == request.user:
+            # The user is canceling
+        else:
+            error = {'detail': 'You must be a member of the call request to cancel.'}
+            return Response(error, status=status.HTTP_403_FORBIDDEN)
 
 
 

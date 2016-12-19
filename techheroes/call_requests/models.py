@@ -28,11 +28,13 @@ class CallRequest(models.Model):
     OPEN = 'o'
     ACCEPTED = 'a'
     DECLINED = 'd'
+    CANCELED = 'c'
 
     STATUSES = (
         (OPEN, 'Open'),
         (ACCEPTED, 'Accepted'),
         (DECLINED, 'Declined'),
+        (CANCELED, 'Canceled'),
     )
 
     user = models.ForeignKey(User, related_name='call_requests')
@@ -80,4 +82,19 @@ class TimeSuggestion(models.Model):
     datetime_two = models.DateTimeField()
     datetime_three = models.DateTimeField()
     timestamp = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = 'Time Suggestion'
+        verbose_name_plural = 'Time Suggestions'
+
+
+class CanceledCallRequestLog(models.Model):
+    user = models.ForeignKey(User, related_name='canceled_call_requests')
+    call_request = models.OneToOneField(CallRequest)
+    reason = models.TextField(max_length=500, default='')
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = 'Canceled Call Request Log'
+        verbose_name_plural = 'Canceled Call Request Logs'
 

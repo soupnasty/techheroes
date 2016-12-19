@@ -76,6 +76,7 @@ There are a few configurations managed as environment variables. In the developm
 - [Accept time](#accept-time)
 - [Get Call Request list](#get-call-request-list)
 - [Get Call Request detail](#get-call-request-detail)
+- [Cancel a Call Request](#cancel-a-call-request)
 
 
 ## API Routes
@@ -1178,3 +1179,17 @@ Call requests are what users make to any hero they desire. The user has to be au
 - `200` if successful
 - `403` if the user is not the user or hero in call request
 - `404` if call request with provided id is not found
+
+
+#### Cancel a Call Request
+
+**DELETE:** `/api/v1/call-requests/:call_request_id/`
+
+**Notes:**
+- Both a user and a hero can cancel a Call Request. The first cancelation is free, but after that there is a cost.
+
+**Status Codes:**
+- `204` if successful
+- `403` if the user is not a member of the call
+- `404` if the call request does not exist
+

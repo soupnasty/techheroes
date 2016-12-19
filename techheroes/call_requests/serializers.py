@@ -5,7 +5,7 @@ from accounts.serializers import LimitedUserSerializer
 from heroes.models import Hero
 from utils.validation import valid_suggested_time
 
-from .models import CallRequest, TimeSuggestion
+from .models import CallRequest, TimeSuggestion, CanceledCallRequestLog
 
 
 class CreateCallRequestSerializer(serializers.Serializer):
@@ -32,7 +32,7 @@ class TimeSuggestionSerializer(serializers.ModelSerializer):
         fields = ('user', 'datetime_one', 'datetime_two', 'datetime_three', 'timestamp')
 
 
-class CallRequestSerializer(serializers.ModelSerializer): 
+class CallRequestSerializer(serializers.ModelSerializer):
     times = TimeSuggestionSerializer(many=True)
 
     class Meta:
@@ -54,6 +54,14 @@ class DeclineReasonSerializer(serializers.Serializer):
 
 class AgreedTimeSerializer(serializers.Serializer):
     agreed_time = serializers.DateTimeField()
+
+
+class CancelCallRequestLogSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = CanceledCallRequestLog
+        fields = ('id', 'user', 'call_request', 'reason', 'timestamp')
+        read_only_fields = ('id', 'user', 'call_request', 'timestamp')
 
 
 
