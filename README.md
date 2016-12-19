@@ -1,5 +1,8 @@
 # Tech Heroes API Documentation
 
+## Summary
+Get on-demand advice from seasoned software engineers from all disciplines. A user will be able look through a list of Heroes (seasoned developers. They can then request a call from a Hero. The Hero will either accept or decline. If a Hero accepts, a time is agreed upon and each person will get a text reminder 15 min before the call. The text will include the conference number to dial into. After the call, the Hero is paid.
+
 
 ## Authentication
 Every request that needs an authenticated user requires an `Authorization` header with the token
@@ -8,10 +11,13 @@ Every request that needs an authenticated user requires an `Authorization` heade
 ## Environment Variables
 There are a few configurations managed as environment variables. In the development environment, these are injected by Docker Compose and managed in the `docker-compose.yml` file.
 
-* `DATABASE_URL` - This is the connection URL for the PostgreSQL database. It is not used in the **development environment**.
 * `SECRET_KEY` - This is a secret string. It is used to encrypt and verify the authentication token on routes that require authentication. This is required. The app won't start without it.
 * `DEBUG` - This boolean tells Django to return descriptive error functions for development
-
+* `DJANGO_SETTINGS_MODULE` - This specifies the settings file to use
+* `DATABASE_URL` - This is the connection URL for the PostgreSQL database. It is not used in the **development environment**.
+* `AWS_ACCESS_KEY` and `AWS_SECRET_KEY` - Amazon web services credentials
+* `TWILIO_ACCOUNT_ID` and `TWILIO_API_TOKEN` - Twilio credentials
+* `TWILIO_NUMBER` - The Tech Heroes Twilio number used to send alerts.
 
 ## Steps to get Docker setup
 1. Create a env folder with a dev.txt file in your local project directory
