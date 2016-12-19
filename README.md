@@ -1,7 +1,7 @@
 # Tech Heroes API Documentation
 
 ## Summary
-Get on-demand advice from seasoned software engineers from all disciplines. A user will be able look through a list of Heroes (seasoned developers. They can then request a call from a Hero. The Hero will either accept or decline. If a Hero accepts, a time is agreed upon and each person will get a text reminder 15 min before the call. The text will include the conference number to dial into. After the call, the Hero is paid.
+Get on-demand advice from seasoned software engineers from all disciplines. A user will be able look through a list of Heroes (seasoned developers). They can then request a call from a Hero. The Hero will either accept or decline. If a Hero accepts, a time is agreed upon and each person will get a text reminder 15 min before the call. The text will include the conference number to dial into. After the call, the Hero is paid.
 
 
 ## Authentication
