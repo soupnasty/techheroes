@@ -50,6 +50,7 @@ class Hero(models.Model):
     rate_in_cents = models.IntegerField(default=0)
     accepted = models.BooleanField(default=False)
     linkedin_url = models.URLField()
+    active = models.BooleanField(default=True)
 
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)

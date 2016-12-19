@@ -10,15 +10,15 @@ from utils.mixins import AtomicMixin
 
 from .models import Hero, HeroAcceptAction
 from .permissions import IsHeroOrStaff, VerifiedEmailandPhone
-from .serializers import (CreateUpdateHeroSerializer, HeroProfileSerializer, AcceptDeclineHeroSerializer,
-    HeroAcceptActionSerializer, HeroSerializer, HeroDetailSerializer)
+from .serializers import (CreateHeroSerializer, UpdateHeroSerializer, HeroProfileSerializer,
+    AcceptDeclineHeroSerializer, HeroAcceptActionSerializer, HeroSerializer, HeroDetailSerializer)
 
 
 class ApplyForHeroView(AtomicMixin, generics.GenericAPIView):
     """
-    POST: Create a new Hero instance that awaits acceptance 
+    POST: Create a new Hero instance that awaits acceptance
     """
-    serializer_class = CreateUpdateHeroSerializer
+    serializer_class = CreateHeroSerializer
     permission_classes = (IsAuthenticated, VerifiedEmailandPhone)
 
     def post(self, request, *args, **kwargs):
@@ -45,7 +45,7 @@ class RetrieveUpdateHeroView(generics.RetrieveUpdateAPIView):
             raise PermissionDenied(detail='User is not a hero.')
 
     def patch(self, request, *args, **kwargs):
-        data = CreateUpdateHeroSerializer(data=request.data)
+        data = UpdateHeroSerializer(data=request.data)
         data.is_valid(raise_exception=True)
 
         hero = self.get_object()
@@ -53,7 +53,7 @@ class RetrieveUpdateHeroView(generics.RetrieveUpdateAPIView):
             setattr(hero, key, value)
 
         hero.save()
-        serializer = self.serializer_class(hero)
+        serializer = HeroProfileSerializer(hero)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
@@ -104,10 +104,10 @@ class DeclineHeroView(generics.CreateAPIView):
 class GetHeroListView(generics.ListAPIView):
     serializer_class = HeroSerializer
     permission_classes = (AllowAny,)
-    queryset = Hero.objects.filter(accepted=True)
+    queryset = Hero.objects.filter(accepted=True, active=True)
 
 
 class GetHeroDetailView(generics.RetrieveAPIView):
     serializer_class = HeroDetailSerializer
     permission_classes = (AllowAny,)
-    queryset = Hero.objects.filter(accepted=True)
+    queryset = Hero.objects.filter(accepted=True, active=True)
