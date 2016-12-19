@@ -622,6 +622,7 @@ After creating a user account and verifying their email, a user can apply to be 
     "rate_in_cents": 100,
     "accepted": false,
     "linkedin_url": "http://www.django-rest-framework.org",
+    "active": true,
     "created": "2016-11-16T16:05:36.716298Z",
     "updated": "2016-11-16T18:44:27.964276Z"
 }
@@ -637,6 +638,9 @@ After creating a user account and verifying their email, a user can apply to be 
 
 **PATCH:** `/api/v1/heroes/profile`
 
+**Notes:**
+- `active`: A boolean field. This is used to update a hero's account to inactive and active.
+
 **Body:**
 ```json
 {
@@ -646,7 +650,8 @@ After creating a user account and verifying their email, a user can apply to be 
   	"short_bio": "This is short summary of myself",
   	"years_of_exp": 1,
   	"rate_in_cents": 0,
-  	"linkedin_url": "http://www.django-rest-framework.org"
+  	"linkedin_url": "http://www.django-rest-framework.org",
+    "active": false,
 }
 ```
 
@@ -682,6 +687,7 @@ After creating a user account and verifying their email, a user can apply to be 
     "rate_in_cents": 0,
     "accepted": false,
     "linkedin_url": "http://www.django-rest-framework.org",
+    "active": false,
     "created": "2016-11-16T16:05:36.716298Z",
     "updated": "2016-11-16T18:50:13.282186Z"
 }
@@ -851,6 +857,7 @@ After creating a user account and verifying their email, a user can apply to be 
     "years_of_exp": 1,
     "rate_in_cents": 0,
     "linkedin_url": "http://www.django-rest-framework.org",
+    "active": false,
     "created": "2016-11-16T16:05:36.716298Z",
     "updated": "2016-11-30T02:46:51.584685Z"
 }
