@@ -585,8 +585,8 @@ After creating a user account and verifying their email, a user can apply to be 
     "years_of_exp": 3,
     "rate_in_cents": 100,
     "accepted": false,
-    "active": true,
     "linkedin_url": "http://www.django-rest-framework.org",
+    "active": true,
     "created": "2016-11-16T16:05:36.716298Z",
     "updated": "2016-11-16T18:44:27.964276Z"
 }
