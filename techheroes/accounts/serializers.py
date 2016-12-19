@@ -151,3 +151,19 @@ class UserWithTokenSerializer(UserSerializer):
 
     def get_auth_token(self, obj):
         return obj.auth_tokens.latest('timestamp').token
+
+
+class GetTimeForUserSerializer(serializers.Serializer):
+    user_id = serializers.UUIDField(format='hex_verbose')
+    utc_datetime = serializers.DateTimeField()
+
+    def validate_user_id(self, value):
+        """Check if user with this id exists"""
+        if not User.objects.filter(id=value).exists():
+            raise serializers.ValidationError('User with this id does not exist.')
+        return value
+
+
+class DateTimeSerializer(serializers.Serializer):
+    user_local_datetime = serializers.DateTimeField()
+

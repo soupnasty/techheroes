@@ -14,4 +14,5 @@ urlpatterns = [
     url(r'^request-password/?$', views.RequestPasswordUserView.as_view(), name='request_password'),
     url(r'^reset-password/?$', views.ResetPasswordUserView.as_view(), name='reset_password'),
     url(r'^profile/?$', views.RetrieveUpdateUserView.as_view(), name='retrieve_update_user'),
+    url(r'^get-time/?$', views.GetTimeForUserView.as_view(), name='get_time_user'),
 ]
