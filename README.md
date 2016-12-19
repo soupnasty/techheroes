@@ -58,6 +58,7 @@ There are a few configurations managed as environment variables. In the developm
 - [Change the users password](#change-the-users-password)
 - [Request a password reset](#request-a-password-reset)
 - [Reset a users password](#reset-a-users-password)
+- [Get a users local time](#get-a-users-local-time)
 
 #### Hero Routes
 - [Apply to be Hero](#apply-to-be-hero)
@@ -479,6 +480,35 @@ Users require a first_name, last_name, email, password, phone, phone_token and t
 - `200` if successful
 - `400` is bad data is sent
 - `404` if the password token is invalid or expired
+
+
+#### Get a users local time
+
+**POST:** `/api/v1/accounts/get-time`
+
+**Notes:**
+- This route takes a UTC datetime and returns the local datetime for the user
+- `user_id`: UUID of the user
+- `utc_datetime`: UTC datetime in the format "YYYY-MM-DDTHH:MM:SSSSSSZ"
+
+**Body:**
+```json
+{
+  	"user_id": "3464941c-eb34-4bc8-83ef-673c3d829641",
+  	"utc_datetime": "2016-12-19T19:27:00.066963Z"
+}
+```
+
+**Response:**
+```json
+{
+    "user_local_datetime": "2016-12-19T13:27:00.066963Z"
+}
+```
+
+**Status Codes:**
+- `200` if successful
+- `400` is bad data is sent or user does not exist
 
 
 ### Hero Routes
