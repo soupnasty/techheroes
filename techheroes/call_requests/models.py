@@ -1,6 +1,6 @@
 from datetime import timedelta
 
-from django_q.tasks import schedule
+from django_q.tasks import async, schedule
 from django_q.models import Schedule
 from django.conf import settings
 from django.contrib.postgres.fields import JSONField
@@ -30,7 +30,7 @@ class CallRequest(models.Model):
     DECLINED = 'd'
     CANCELED = 'c'
 
-    STATUSES = ( 
+    STATUSES = (
         (OPEN, 'Open'),
         (ACCEPTED, 'Accepted'),
         (DECLINED, 'Declined'),
@@ -68,7 +68,7 @@ class CallRequest(models.Model):
             next_run = self.agreed_time - timezone.timedelta(minutes=settings.SMS_REMINDER_TIME_IN_MIN)
 
             schedule(
-                'call_requests.call_request_sms_reminder',
+                'utils.call_request_sms_reminder',
                 self.id,
                 user.id,
                 message,
