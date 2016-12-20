@@ -21,6 +21,8 @@ def get_email(context):
         'hero_declined_call_request': lambda: hero_declined_call_request(context),
         'hero_suggested_new_times': lambda: hero_suggested_new_times(context),
         'hero_agreed_to_time': lambda: hero_agreed_to_time(context),
+        'call_request_cancelation_confirmation': lambda: call_request_cancelation_confirmation(context),
+        'alert_user_of_cancelation': lambda: alert_user_of_cancelation(context),
     }
 
     return messages.get(context['type'], lambda: email_error(context))()
@@ -258,5 +260,43 @@ def hero_agreed_to_time(context):
     text = render_to_string(TEXT_TEMPLATE, email_context)
     html = render_to_string(HTML_TEMPLATE, email_context)
 
+    return subject, text, html
+
+
+def call_request_cancelation_confirmation(context):
+    text_graf = ('This is a confirmation that you canceled your call with {}. \n\n'
+        'Please be more careful when planning your next call. \n'.format(context['other_user_name']))
+    html_graf = mark_safe('<p>{0}</p>'.format(escape(text_graf)))
+
+    email_context = {
+        'header': 'Hey {0},'.format(context['user_name']),
+        'text_content': text_graf,
+        'html_content': html_graf,
+        'static_host': settings.WEB_DOMAIN,
+        'opt_out_url': USER_OPT_OUT_URL,
+    }
+
+    subject = 'Canceled call confirmation'
+    text = render_to_string(TEXT_TEMPLATE, email_context)
+    html = render_to_string(HTML_TEMPLATE, email_context)
+    return subject, text, html
+
+
+def alert_user_of_cancelation(context):
+    text_graf = ('{} has canceled the call request for the following reason: \n\n'
+        '"{}" \n\n  We apologize for the inconvenience. \n'.format(context['other_user_name'], context['reason']))
+    html_graf = mark_safe('<p>{0}</p>'.format(escape(text_graf)))
+
+    email_context = {
+        'header': 'Hey {0},'.format(context['user_name']),
+        'text_content': text_graf,
+        'html_content': html_graf,
+        'static_host': settings.WEB_DOMAIN,
+        'opt_out_url': USER_OPT_OUT_URL,
+    }
+
+    subject = '{} canceled the call request.'.format(context['other_user_name'])
+    text = render_to_string(TEXT_TEMPLATE, email_context)
+    html = render_to_string(HTML_TEMPLATE, email_context)
     return subject, text, html
 

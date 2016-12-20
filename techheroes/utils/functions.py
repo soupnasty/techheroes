@@ -21,3 +21,15 @@ def send_sms(phone, msg):
         # TODO Log this
         print('Couldn\'t send a text to {0} because: {1}'.format(self.get_full_name(), str(e)))
         raise SendSMSError(str(e))
+
+
+def call_request_sms_reminder(call_request_id, user_id, msg):
+    from accounts.models import User
+    from call_requests.models import CallRequest
+    
+    call_request = CallRequest.objects.get(id=call_request_id)
+    if call_request.status == CallRequest.CANCELED:
+        return
+
+    user = User.objects.get(id=user_id)
+    user.send_sms(msg)

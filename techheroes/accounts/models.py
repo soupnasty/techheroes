@@ -7,7 +7,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.core.mail import send_mail
 from django.db import models
 from django.utils import timezone
-from twilio.rest import TwilioRestClient
+from twilio.rest import TwilioRestClient 
 from timezone_field import TimeZoneField
 
 from authentication.models import AuthToken, EmailToken, PhoneToken, PasswordToken, InvalidTokenError
@@ -262,6 +262,25 @@ class User(AbstractBaseUser):
             'estimated_length': call_request.estimated_length,
             'agreed_time': convert_utc_to_local_time(call_request.agreed_time, self.timezone),
             'type': 'hero_agreed_to_time'}
+
+        subject, text, html = get_email(context)
+        self.send_email(subject, text, html=html, email=self.email)
+
+    def send_cancelation_confirmation_email(self, other_user):
+        context = {
+            'user_name': self.get_full_name(),
+            'other_user_name': other_user.get_full_name(),
+            'type': 'call_request_cancelation_confirmation'}
+
+        subject, text, html = get_email(context)
+        self.send_email(subject, text, html=html, email=self.email)
+
+    def alert_user_of_cancelation_email(self, other_user, reason):
+        context = {
+            'user_name': self.get_full_name(),
+            'other_user_name': other_user.get_full_name(),
+            'reason': reason,
+            'type': 'alert_user_of_cancelation'}
 
         subject, text, html = get_email(context)
         self.send_email(subject, text, html=html, email=self.email)

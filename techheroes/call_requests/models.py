@@ -30,7 +30,7 @@ class CallRequest(models.Model):
     DECLINED = 'd'
     CANCELED = 'c'
 
-    STATUSES = (
+    STATUSES = ( 
         (OPEN, 'Open'),
         (ACCEPTED, 'Accepted'),
         (DECLINED, 'Declined'),
@@ -61,14 +61,16 @@ class CallRequest(models.Model):
     def schedule_sms_reminders(self):
         """ Schedule reminders for both the hero and user """
         for user in [self.user, self.hero.user]:
+            other_user = self.hero.user if user == self.user else self.user
             message = ('This is a reminder from Tech Heroes! You have a call with {}. '
                         'Dial this number {} in {} minutes.'.format(
-                        user.get_full_name(), settings.CONFERENCE_NUMBER, settings.SMS_REMINDER_TIME_IN_MIN))
+                        other_user.get_full_name(), settings.CONFERENCE_NUMBER, settings.SMS_REMINDER_TIME_IN_MIN))
             next_run = self.agreed_time - timezone.timedelta(minutes=settings.SMS_REMINDER_TIME_IN_MIN)
 
             schedule(
-                'utils.send_sms',
-                user.phone,
+                'call_requests.call_request_sms_reminder',
+                self.id,
+                user.id,
                 message,
                 schedule_type=Schedule.ONCE,
                 next_run=next_run
@@ -92,6 +94,7 @@ class CanceledCallRequestLog(models.Model):
     user = models.ForeignKey(User, related_name='canceled_call_requests')
     call_request = models.OneToOneField(CallRequest)
     reason = models.TextField(max_length=500, default='')
+    was_accepted = models.BooleanField(default=False)
     timestamp = models.DateTimeField(auto_now_add=True)
 
     class Meta:

@@ -1226,13 +1226,56 @@ Call requests are what users make to any hero they desire. The user has to be au
 
 #### Cancel a Call Request
 
-**DELETE:** `/api/v1/call-requests/:call_request_id/`
+**PATCH:** `/api/v1/call-requests/:call_request_id/cancel/`
 
 **Notes:**
-- Both a user and a hero can cancel a Call Request. The first cancelation is free, but after that there is a cost.
+- `reason`: A reason for canceling the call
+- `force`: A boolean field allowing the cancelation to be made even though the user has surpassed their allowed cancelation number. This might be used if they user decides to pay a fee.
+- `status` of the Call Request will change to `c`
+
+**Body:**
+```json
+{
+  	"reason": "I have to cancel because I have better things to do.",
+    "force": true
+}
+```
+
+**Response:**
+```json
+{
+    "id": 1,
+    "user": "fd6494d8-e684-4f4b-960c-c83f56d1d790",
+    "hero": 1,
+    "message": "This is a general summary or reason for the call",
+    "estimated_length": 15,
+    "status": "c",
+    "reason": "",
+    "times": [
+      {
+       "user": {
+         "id": "b6513c6f-e3b5-4c00-ae10-1b78950d8c8a",
+         "first_name": "Tom",
+         "last_name": "Brady",
+         "profile_image": "https://media.licdn.com/mpr/mpr/shrink_100_100/p/5/005/040/0cd/008cf89.jpg",
+         "timezone": "America/Chicago",
+         "created": "2016-12-03T00:23:57.364198Z"
+       },
+       "datetime_one": "2017-12-25T06:00:00.000000Z",
+       "datetime_two": "2017-12-25T07:30:00.000000Z",
+       "datetime_three": "2017-12-25T08:30:00.000000Z",
+       "timestamp": "2016-12-05T17:04:23.659493Z"
+     },
+    ],
+    "agreed_time": "2016-11-17T22:06:00.000000Z",
+    "created": "2016-11-17T22:06:50.108634Z",
+    "updated": "2016-12-05T17:37:05.617390Z"
+}
+```
 
 **Status Codes:**
-- `204` if successful
-- `403` if the user is not a member of the call
-- `404` if the call request does not exist
+- `200` if successful
+- `403` if the user is not the user or hero in call request
+- `404` if call request with provided id is not found
+- `409` if the user has canceled too many times
 
