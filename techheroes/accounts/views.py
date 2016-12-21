@@ -53,6 +53,7 @@ class RegisterUserView(AtomicMixin, GenericAPIView):
         data.is_valid(raise_exception=True)
 
         try:
+            data.validated_data['phone_verified'] = True
             new_user = User.objects.create_user(**data.validated_data)
         except ValidationError:
             error = {'detail': 'Invalid timezone'}

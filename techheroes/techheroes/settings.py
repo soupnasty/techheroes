@@ -2,6 +2,7 @@
 Django settings for techheroes project.
 """
 
+import pytz
 import os
 import sys
 import dj_database_url
@@ -165,6 +166,7 @@ WEB_DOMAIN = os.getenv('WEB_DOMAIN', 'www.techheroes.xyz')
 AUTH_TOKEN_EXP_IN_DAYS = 7
 VERIFICATION_TOKEN_EXP_IN_DAYS = 7
 SMS_REMINDER_TIME_IN_MIN = 15
+COMPANY_TIMEZONE = pytz.timezone('America/Chicago')
 
 if TESTING:
     EMAIL_HOST = "localhost"
@@ -190,5 +192,5 @@ TWILIO_ACCOUNT_ID = os.getenv('TWILIO_ACCOUNT_ID')
 TWILIO_API_TOKEN = os.getenv('TWILIO_API_TOKEN')
 TWILIO_NUMBER = os.getenv('TWILIO_NUMBER')
 
-CONFERENCE_NUMBER = 13122489065 
+CONFERENCE_NUMBER = 13122489065
 

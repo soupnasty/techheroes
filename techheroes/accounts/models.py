@@ -2,7 +2,7 @@ import pytz
 import uuid
 
 from django.conf import settings
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.mail import send_mail
 from django.db import models
@@ -17,29 +17,29 @@ from .emails import get_email
 
 
 class UserManager(BaseUserManager):
-    def _create_user(self, email, first_name, last_name, password, phone, timezone, is_staff, **extra_fields):
-        """
-        Create and save an User with the given email, password and name.
-        """
+    def _create_user(self, email, password, **extra_fields):
         email = self.normalize_email(email)
-        user = self.model(email=email, first_name=first_name, last_name=last_name,
-                            phone=phone, phone_verified=True, timezone=timezone,
-                            is_staff=is_staff, is_active=True, **extra_fields)
+        user = self.model(email=email, **extra_fields)
         user.set_password(password)
         user.save(using=self._db)
-        user.send_registration_email(user.email)
 
+        user.send_registration_email(user.email)
         AuthToken.objects.create(user=user)
         return user
 
-    def create_user(self, email, first_name, last_name, password, phone, timezone, **extra_fields):
-        """
-        Create and save an User with the given email, password, name, phone and timezone.
-        """
-        return self._create_user(email, first_name, last_name, password, phone, timezone, is_staff=False, **extra_fields)
+    def create_user(self, email, password, **extra_fields):
+        extra_fields.setdefault('is_staff', False)
+
+        return self._create_user(email, password, **extra_fields)
+
+    def create_superuser(self, email, password, **extra_fields):
+        extra_fields.setdefault('is_staff', True)
+        extra_fields.setdefault('is_superuser', True)
+
+        return self._create_user(email, password, **extra_fields)
 
 
-class User(AbstractBaseUser):
+class User(AbstractBaseUser, PermissionsMixin):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
@@ -62,6 +62,9 @@ class User(AbstractBaseUser):
 
     def __str__(self):
         return self.email
+
+    def get_short_name(self):
+        return self.first_name
 
     def get_full_name(self):
         return "{0} {1}".format(self.first_name, self.last_name)
