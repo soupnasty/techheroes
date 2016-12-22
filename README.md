@@ -18,6 +18,8 @@ There are a few configurations managed as environment variables. In the developm
 * `AWS_ACCESS_KEY` and `AWS_SECRET_KEY` - Amazon web services credentials
 * `TWILIO_ACCOUNT_ID` and `TWILIO_API_TOKEN` - Twilio credentials
 * `TWILIO_NUMBER` - The Tech Heroes Twilio number used to send alerts.
+* `STRIPE_TEST_SECRET_KEY` and `STRIPE_TEST_PUB_KEY` are required for Stripe testing
+* `STRIPE_LIVE_SECRET_KEY` and `STRIPE_LIVE_PUB_KEY`
 
 ## Steps to get Docker setup
 1. Create a env folder with a dev.txt file in your local project directory
@@ -64,6 +66,7 @@ There are a few configurations managed as environment variables. In the developm
 - [Change the users password](#change-the-users-password)
 - [Request a password reset](#request-a-password-reset)
 - [Reset a users password](#reset-a-users-password)
+- [Get a users local time](#get-a-users-local-time)
 
 #### Hero Routes
 - [Apply to be Hero](#apply-to-be-hero)
@@ -487,6 +490,35 @@ Users require a first_name, last_name, email, password, phone, phone_token and t
 - `404` if the password token is invalid or expired
 
 
+#### Get a users local time
+
+**POST:** `/api/v1/accounts/get-time`
+
+**Notes:**
+- This route takes a UTC datetime and returns the local datetime for the user
+- `user_id`: UUID of the user
+- `utc_datetime`: UTC datetime in the format "YYYY-MM-DDTHH:MM:SSSSSSZ"
+
+**Body:**
+```json
+{
+  	"user_id": "3464941c-eb34-4bc8-83ef-673c3d829641",
+  	"utc_datetime": "2016-12-19T19:27:00.066963Z"
+}
+```
+
+**Response:**
+```json
+{
+    "user_local_datetime": "2016-12-19T13:27:00.066963Z"
+}
+```
+
+**Status Codes:**
+- `200` if successful
+- `400` is bad data is sent or user does not exist
+
+
 ### Hero Routes
 After creating a user account and verifying their email, a user can apply to be a Hero.
 
@@ -592,6 +624,7 @@ After creating a user account and verifying their email, a user can apply to be 
     "rate_in_cents": 100,
     "accepted": false,
     "linkedin_url": "http://www.django-rest-framework.org",
+    "active": true,
     "created": "2016-11-16T16:05:36.716298Z",
     "updated": "2016-11-16T18:44:27.964276Z"
 }
@@ -607,6 +640,9 @@ After creating a user account and verifying their email, a user can apply to be 
 
 **PATCH:** `/api/v1/heroes/profile`
 
+**Notes:**
+- `active`: A boolean field. This is used to update a hero's account to inactive and active.
+
 **Body:**
 ```json
 {
@@ -616,7 +652,8 @@ After creating a user account and verifying their email, a user can apply to be 
   	"short_bio": "This is short summary of myself",
   	"years_of_exp": 1,
   	"rate_in_cents": 0,
-  	"linkedin_url": "http://www.django-rest-framework.org"
+  	"linkedin_url": "http://www.django-rest-framework.org",
+    "active": false,
 }
 ```
 
@@ -652,6 +689,7 @@ After creating a user account and verifying their email, a user can apply to be 
     "rate_in_cents": 0,
     "accepted": false,
     "linkedin_url": "http://www.django-rest-framework.org",
+    "active": false,
     "created": "2016-11-16T16:05:36.716298Z",
     "updated": "2016-11-16T18:50:13.282186Z"
 }
@@ -821,6 +859,7 @@ After creating a user account and verifying their email, a user can apply to be 
     "years_of_exp": 1,
     "rate_in_cents": 0,
     "linkedin_url": "http://www.django-rest-framework.org",
+    "active": false,
     "created": "2016-11-16T16:05:36.716298Z",
     "updated": "2016-11-30T02:46:51.584685Z"
 }

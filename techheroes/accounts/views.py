@@ -10,7 +10,8 @@ from rest_framework.response import Response
 from accounts.models import User
 from accounts.serializers import (RegisterUserSerializer, LoginUserSerializer, UserSerializer,
         UserWithTokenSerializer, EmailTokenSerializer, CreatePhoneTokenSerializer, PhoneTokenSerializer,
-        PasswordChangeSerializer, PasswordResetSerializer, RequestPasswordResetSerializer)
+        PasswordChangeSerializer, PasswordResetSerializer, RequestPasswordResetSerializer,
+        GetTimeForUserSerializer, DateTimeSerializer)
 from authentication.models import AuthToken, PasswordToken, PhoneToken, InvalidTokenError
 from utils.functions import send_sms
 from utils.mixins import AtomicMixin
@@ -222,3 +223,20 @@ class RetrieveUpdateUserView(RetrieveUpdateAPIView):
 
     def get_object(self):
         return self.request.user
+
+
+class GetTimeForUserView(GenericAPIView):
+    serializer_class = GetTimeForUserSerializer
+    permission_classes = (AllowAny,)
+
+    def post(self, request):
+        data = self.serializer_class(data=request.data)
+        data.is_valid(raise_exception=True)
+
+        user = User.objects.get(id=data.validated_data['user_id'])
+        utc_datetime = data.validated_data['utc_datetime']
+        local_datetime = utc_datetime.astimezone(user.timezone)
+
+        serializer = DateTimeSerializer({"user_local_datetime": local_datetime})
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
