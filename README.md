@@ -18,6 +18,8 @@ There are a few configurations managed as environment variables. In the developm
 * `AWS_ACCESS_KEY` and `AWS_SECRET_KEY` - Amazon web services credentials
 * `TWILIO_ACCOUNT_ID` and `TWILIO_API_TOKEN` - Twilio credentials
 * `TWILIO_NUMBER` - The Tech Heroes Twilio number used to send alerts.
+* `STRIPE_TEST_SECRET_KEY` and `STRIPE_TEST_PUB_KEY` are required for Stripe testing
+* `STRIPE_LIVE_SECRET_KEY` and `STRIPE_LIVE_PUB_KEY`
 
 ## Steps to get Docker setup
 1. Create a env folder with a dev.txt file in your local project directory
