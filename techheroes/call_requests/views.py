@@ -14,8 +14,7 @@ from heroes.permissions import IsHeroOrStaff
 from .models import CallRequest, TimeSuggestion, CanceledCallRequestLog
 from .permissions import IsOwnerOrStaff
 from .serializers import (CreateCallRequestSerializer, CallRequestSerializer,
-    TimesSerializer, DeclineReasonSerializer, AgreedTimeSerializer, CancelCallSerializer,
-    CancelCallRequestLogSerializer)
+    TimesSerializer, DeclineReasonSerializer, AgreedTimeSerializer, CancelCallSerializer)
 
 
 class CreateListCallRequestView(generics.ListCreateAPIView):
@@ -180,7 +179,7 @@ class AgreedTimeSuggestionView(generics.UpdateAPIView):
         # schedule text messages to go out X min before the call for both the hero and the user
         call_request.schedule_sms_reminders()
 
-        serializer = self.serializer_class(call_request) 
+        serializer = self.serializer_class(call_request)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
