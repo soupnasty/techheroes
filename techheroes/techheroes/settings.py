@@ -2,6 +2,7 @@
 Django settings for techheroes project.
 """
 
+import pytz
 import os
 import sys
 import dj_database_url
@@ -166,7 +167,8 @@ WEB_DOMAIN = os.getenv('WEB_DOMAIN', 'www.techheroes.xyz')
 AUTH_TOKEN_EXP_IN_DAYS = 7
 VERIFICATION_TOKEN_EXP_IN_DAYS = 7
 SMS_REMINDER_TIME_IN_MIN = 15
-MAX_CONFERENCE_CALL_TIME_IN_MIN = 120 
+MAX_CONFERENCE_CALL_TIME_IN_MIN = 120
+COMPANY_TIMEZONE = pytz.timezone('America/Chicago')
 
 if TESTING:
     EMAIL_HOST = "localhost"
@@ -182,6 +184,12 @@ elif DEBUG:
     BANDIT_EMAIL = 'test+bandit@techheroes.xyz'
 else:
     EMAIL_BACKEND = 'django_ses.SESBackend'
+
+# Constants
+AUTH_TOKEN_EXP_IN_DAYS = 7
+VERIFICATION_TOKEN_EXP_IN_DAYS = 7
+SMS_REMINDER_TIME_IN_MIN = 15
+ALLOWED_CANCELATIONS = 3
 
 # AWS configuration
 AWS_ACCESS_KEY = os.getenv('AWS_ACCESS_KEY')

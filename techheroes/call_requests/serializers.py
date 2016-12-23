@@ -57,7 +57,8 @@ class AgreedTimeSerializer(serializers.Serializer):
     agreed_time = serializers.DateTimeField()
 
 
-
-
+class CancelCallSerializer(serializers.Serializer):
+    reason = serializers.CharField(max_length=500)
+    force = serializers.BooleanField(default=True)
 
 

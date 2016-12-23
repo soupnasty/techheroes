@@ -2,12 +2,12 @@ import pytz
 import uuid
 
 from django.conf import settings
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.mail import send_mail
 from django.db import models
 from django.utils import timezone
-from twilio.rest import TwilioRestClient
+from twilio.rest import TwilioRestClient 
 from timezone_field import TimeZoneField
 
 from authentication.models import AuthToken, EmailToken, PhoneToken, PasswordToken, InvalidTokenError
@@ -17,29 +17,29 @@ from .emails import get_email
 
 
 class UserManager(BaseUserManager):
-    def _create_user(self, email, first_name, last_name, password, phone, timezone, is_staff, **extra_fields):
-        """
-        Create and save an User with the given email, password and name.
-        """
+    def _create_user(self, email, password, **extra_fields):
         email = self.normalize_email(email)
-        user = self.model(email=email, first_name=first_name, last_name=last_name,
-                            phone=phone, phone_verified=True, timezone=timezone,
-                            is_staff=is_staff, is_active=True, **extra_fields)
+        user = self.model(email=email, **extra_fields)
         user.set_password(password)
         user.save(using=self._db)
-        user.send_registration_email(user.email)
 
+        user.send_registration_email(user.email)
         AuthToken.objects.create(user=user)
         return user
 
-    def create_user(self, email, first_name, last_name, password, phone, timezone, **extra_fields):
-        """
-        Create and save an User with the given email, password, name, phone and timezone.
-        """
-        return self._create_user(email, first_name, last_name, password, phone, timezone, is_staff=False, **extra_fields)
+    def create_user(self, email, password, **extra_fields):
+        extra_fields.setdefault('is_staff', False)
+
+        return self._create_user(email, password, **extra_fields)
+
+    def create_superuser(self, email, password, **extra_fields):
+        extra_fields.setdefault('is_staff', True)
+        extra_fields.setdefault('is_superuser', True)
+
+        return self._create_user(email, password, **extra_fields)
 
 
-class User(AbstractBaseUser):
+class User(AbstractBaseUser, PermissionsMixin):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
@@ -62,6 +62,9 @@ class User(AbstractBaseUser):
 
     def __str__(self):
         return self.email
+
+    def get_short_name(self):
+        return self.first_name
 
     def get_full_name(self):
         return "{0} {1}".format(self.first_name, self.last_name)
@@ -262,6 +265,25 @@ class User(AbstractBaseUser):
             'estimated_length': call_request.estimated_length,
             'agreed_time': convert_utc_to_local_time(call_request.agreed_time, self.timezone),
             'type': 'hero_agreed_to_time'}
+
+        subject, text, html = get_email(context)
+        self.send_email(subject, text, html=html, email=self.email)
+
+    def send_cancelation_confirmation_email(self, other_user):
+        context = {
+            'user_name': self.get_full_name(),
+            'other_user_name': other_user.get_full_name(),
+            'type': 'call_request_cancelation_confirmation'}
+
+        subject, text, html = get_email(context)
+        self.send_email(subject, text, html=html, email=self.email)
+
+    def alert_user_of_cancelation_email(self, other_user, reason):
+        context = {
+            'user_name': self.get_full_name(),
+            'other_user_name': other_user.get_full_name(),
+            'reason': reason,
+            'type': 'alert_user_of_cancelation'}
 
         subject, text, html = get_email(context)
         self.send_email(subject, text, html=html, email=self.email)
