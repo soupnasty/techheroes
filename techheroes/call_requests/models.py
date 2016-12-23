@@ -29,12 +29,14 @@ class CallRequest(models.Model):
     ACCEPTED = 'a'
     DECLINED = 'd'
     CANCELED = 'c'
+    SUCCESSFUL = 's'
 
     STATUSES = (
         (OPEN, 'Open'),
         (ACCEPTED, 'Accepted'),
         (DECLINED, 'Declined'),
         (CANCELED, 'Canceled'),
+        (SUCCESSFUL, 'Successful'),
     )
 
     user = models.ForeignKey(User, related_name='call_requests')
@@ -70,7 +72,7 @@ class CallRequest(models.Model):
             schedule(
                 'utils.call_request_sms_reminder',
                 self.id,
-                user.id,
+                str(user.id),
                 message,
                 schedule_type=Schedule.ONCE,
                 next_run=next_run

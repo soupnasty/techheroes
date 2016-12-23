@@ -66,7 +66,7 @@ class Hero(models.Model):
     def send_acceptance_email(self):
         # TODO change this when email is ready
         link = 'https://{0}/hero/{1}'.format(settings.WEB_DOMAIN, self.slug)
-        context = {'hero_name': self.user.get_full_name(), 'link': link, 'type': 'accepted_hero'}
+        context = {'hero_name': self.user.get_short_name(), 'link': link, 'type': 'accepted_hero'}
 
         subject, text, html = get_email(context)
         self.user.send_email(subject, text, html=html, email=self.user.email)
@@ -104,7 +104,7 @@ class Hero(models.Model):
 
     def send_agreed_time_email(self, call_request):
         context = {
-            'to_user_name': self.user.get_full_name(),
+            'to_user_name': self.user.get_short_name(),
             'from_user_name': call_request.user.get_full_name(),
             'message': call_request.message,
             'estimated_length': call_request.estimated_length,
