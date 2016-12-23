@@ -162,7 +162,9 @@ STATIC_URL = '/static/'
 
 SERVER_EMAIL = 'Tech Heroes <notifications@techherosapp.com>'
 
+# Domain config
 WEB_DOMAIN = os.getenv('WEB_DOMAIN', 'www.techheroes.xyz')
+API_DOMAIN = os.getenv('API_DOMAIN', 'api.techheroes.xyz')
 
 AUTH_TOKEN_EXP_IN_DAYS = 7
 VERIFICATION_TOKEN_EXP_IN_DAYS = 7

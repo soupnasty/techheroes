@@ -63,10 +63,12 @@ def conference_call(request):
     message = "Greetings {}! We hope your call goes well.".format(user.first_name)
     r.say(message)
     with r.dial() as d:
+        status_callback_url = settings.API_DOMAIN + "/api/v1/conferences/webhook/event"
         d.conference(name=call_request.hero.slug, maxParticipants=2, statusCallbackEvent="start end join leave",
-                    statusCallback="https://6c7e1968.ngrok.io/api/v1/conferences/webhook/event")
+                    statusCallback=status_callback_url)
 
     return HttpResponse(str(r))
+
 
 @csrf_exempt
 def log_event(request):

@@ -7,6 +7,9 @@ Get on-demand advice from seasoned software engineers from all disciplines. A us
 ## Authentication
 Every request that needs an authenticated user requires an `Authorization` header with the token
 
+## Domain Configurations
+* The web domain for Tech Heroes is www.techheroes.xyz
+* The api domain for Tech Heroes is api.techheroes.xyz
 
 ## Environment Variables
 There are a few configurations managed as environment variables. In the development environment, these are injected by Docker Compose and managed in the `docker-compose.yml` file.
