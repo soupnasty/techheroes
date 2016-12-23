@@ -86,6 +86,10 @@ There are a few configurations managed as environment variables. In the developm
 - [Get Call Request list](#get-call-request-list)
 - [Get Call Request detail](#get-call-request-detail)
 
+#### Conference Routes
+- [Get Conference list](#get-conference-list)
+- [Get Conference detail](#get-conference-detail)
+
 
 ## API Routes
 
@@ -1223,3 +1227,40 @@ Call requests are what users make to any hero they desire. The user has to be au
 - `200` if successful
 - `403` if the user is not the user or hero in call request
 - `404` if call request with provided id is not found
+
+
+### Conference Routes
+Conferences are created when a user and a hero dial into a twilio number.
+
+
+#### Get Conference list
+
+**GET:** `/api/v1/conferences/`
+
+**Response:**
+```json
+{
+
+}
+```
+
+**Status Codes:**
+- `200` if successful
+- `403` if unauthenticated
+
+
+#### Get Conference detail
+
+**GET:** `/api/v1/conferences/:conference_id`
+
+**Response:**
+```json
+{
+
+}
+```
+
+**Status Codes:**
+- `200` if successful
+- `403` if the user is not in conference
+- `404` if not found

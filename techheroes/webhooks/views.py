@@ -12,8 +12,10 @@ def conference_call(request):
 
     # check if call request exists at this moment in time for this number
         # if exists
-            # grab the accepted call request using either of the user's numbers
-            # record time and user who first joined
+            # start the twilio conference
+            # grab the accepted call request using the phone number
+            # create a conference instance
+            # create a conference action instance to record time and user who first joined
         # else
             # RETURN error "No conference was found for the number you are calling with.
             # Make sure you are using the phone you verified your account with"

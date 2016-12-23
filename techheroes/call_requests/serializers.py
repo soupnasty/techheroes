@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.utils.timezone import now, timedelta
 from rest_framework import serializers
 
@@ -11,7 +12,7 @@ from .models import CallRequest, TimeSuggestion
 class CreateCallRequestSerializer(serializers.Serializer):
     hero_id = serializers.IntegerField()
     message = serializers.CharField(max_length=500)
-    estimated_length = serializers.IntegerField(max_value=120)
+    estimated_length = serializers.IntegerField(max_value=settings.MAX_CONFERENCE_CALL_TIME_IN_MIN)
 
     def validate_hero_id(self, value):
         if not Hero.objects.filter(id=value).exists():
@@ -32,7 +33,7 @@ class TimeSuggestionSerializer(serializers.ModelSerializer):
         fields = ('user', 'datetime_one', 'datetime_two', 'datetime_three', 'timestamp')
 
 
-class CallRequestSerializer(serializers.ModelSerializer): 
+class CallRequestSerializer(serializers.ModelSerializer):
     times = TimeSuggestionSerializer(many=True)
 
     class Meta:
