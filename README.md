@@ -39,6 +39,7 @@ There are a few configurations managed as environment variables. In the developm
 3. Run `docker-compose run django python manage.py migrate` (only if new migrations are needed)
 4. Run `docker-compose up`
 5. You can make backend changes and save while the server is up
+6. Run `docker-compose run django py.test` to run backend tests
 
 ## Frontend local development workflow
 0. [Helpful frontend Docker workflow article](https://medium.com/@tribou/react-and-flux-a-docker-development-workflow-469957f3bbf0#.wko4im9d1)
@@ -46,13 +47,6 @@ There are a few configurations managed as environment variables. In the developm
 2. Run `docker-compose run web npm install` download the node_modules locally
 3. Make front end changes and test them manually
 4. Run `docker-compose up` to test the system as a whole in prod-like environment
-
-## Steps to setup api server locally
-1. Run `docker-compose run web python manage.py migrate` to make initial migrations
-2. Run `docker-compose up` to start all containers
-
-# Run Tests
-`docker-compose run web py.test`
 
 
 ## API Table of Contents
