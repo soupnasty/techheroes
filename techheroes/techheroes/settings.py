@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'accounts',
     'authentication',
     'call_requests',
+    'conferences',
     'heroes',
 ]
 
@@ -161,11 +162,14 @@ STATIC_URL = '/static/'
 
 SERVER_EMAIL = 'Tech Heroes <notifications@techherosapp.com>'
 
+# Domain config
 WEB_DOMAIN = os.getenv('WEB_DOMAIN', 'www.techheroes.xyz')
+API_DOMAIN = os.getenv('API_DOMAIN', 'api.techheroes.xyz')
 
 AUTH_TOKEN_EXP_IN_DAYS = 7
 VERIFICATION_TOKEN_EXP_IN_DAYS = 7
 SMS_REMINDER_TIME_IN_MIN = 15
+MAX_CONFERENCE_CALL_TIME_IN_MIN = 120
 COMPANY_TIMEZONE = pytz.timezone('America/Chicago')
 
 if TESTING:

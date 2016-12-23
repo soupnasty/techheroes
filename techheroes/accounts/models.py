@@ -7,7 +7,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.core.mail import send_mail
 from django.db import models
 from django.utils import timezone
-from twilio.rest import TwilioRestClient 
+from twilio.rest import TwilioRestClient
 from timezone_field import TimeZoneField
 
 from authentication.models import AuthToken, EmailToken, PhoneToken, PasswordToken, InvalidTokenError
@@ -212,7 +212,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         # TODO change this when email is ready
         link = 'https://{0}/call-request/{1}'.format(settings.WEB_DOMAIN, call_request.id)
         context = {
-            'user_name': self.get_full_name(),
+            'user_name': self.get_short_name(),
             'hero_name': call_request.hero.user.get_full_name(),
             'link': link,
             'message': call_request.message,
@@ -259,7 +259,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def send_agreed_time_email(self, call_request):
         context = {
-            'user_name': self.get_full_name(),
+            'user_name': self.get_short_name(),
             'hero_name': call_request.hero.user.get_full_name(),
             'message': call_request.message,
             'estimated_length': call_request.estimated_length,
