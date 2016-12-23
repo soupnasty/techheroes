@@ -2,6 +2,7 @@
 Django settings for techheroes project.
 """
 
+import pytz
 import os
 import sys
 import dj_database_url
@@ -165,6 +166,7 @@ WEB_DOMAIN = os.getenv('WEB_DOMAIN', 'www.techheroes.xyz')
 AUTH_TOKEN_EXP_IN_DAYS = 7
 VERIFICATION_TOKEN_EXP_IN_DAYS = 7
 SMS_REMINDER_TIME_IN_MIN = 15
+COMPANY_TIMEZONE = pytz.timezone('America/Chicago')
 
 if TESTING:
     EMAIL_HOST = "localhost"
