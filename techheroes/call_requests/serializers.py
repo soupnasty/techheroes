@@ -32,7 +32,7 @@ class TimeSuggestionSerializer(serializers.ModelSerializer):
         fields = ('user', 'datetime_one', 'datetime_two', 'datetime_three', 'timestamp')
 
 
-class CallRequestSerializer(serializers.ModelSerializer): 
+class CallRequestSerializer(serializers.ModelSerializer):
     times = TimeSuggestionSerializer(many=True)
 
     class Meta:
@@ -56,7 +56,8 @@ class AgreedTimeSerializer(serializers.Serializer):
     agreed_time = serializers.DateTimeField()
 
 
-
-
+class CancelCallSerializer(serializers.Serializer):
+    reason = serializers.CharField(max_length=500)
+    force = serializers.BooleanField(default=True)
 
 

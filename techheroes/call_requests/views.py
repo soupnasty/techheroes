@@ -1,19 +1,20 @@
+from django.conf import settings
 from django.db import IntegrityError
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from rest_framework import status, generics
 from rest_framework.exceptions import PermissionDenied
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 
 from accounts.models import User
 from heroes.models import Hero
 from heroes.permissions import IsHeroOrStaff
 
-from .models import CallRequest, TimeSuggestion
+from .models import CallRequest, TimeSuggestion, CanceledCallRequestLog
 from .permissions import IsOwnerOrStaff
 from .serializers import (CreateCallRequestSerializer, CallRequestSerializer,
-    TimesSerializer, DeclineReasonSerializer, AgreedTimeSerializer)
+    TimesSerializer, DeclineReasonSerializer, AgreedTimeSerializer, CancelCallSerializer)
 
 
 class CreateListCallRequestView(generics.ListCreateAPIView):
@@ -51,13 +52,13 @@ class CreateListCallRequestView(generics.ListCreateAPIView):
 
 class RetrieveCallRequestView(generics.RetrieveAPIView):
     serializer_class = CallRequestSerializer
-    permission_classes = (IsOwnerOrStaff,)
+    permission_classes = (IsAuthenticated, IsOwnerOrStaff,)
     queryset = CallRequest.objects.all()
 
 
 class AcceptCallRequestHeroView(generics.UpdateAPIView):
     serializer_class = CallRequestSerializer
-    permission_classes = (IsHeroOrStaff, IsOwnerOrStaff)
+    permission_classes = (IsAuthenticated, IsHeroOrStaff, IsOwnerOrStaff)
 
     def patch(self, request, *args, **kwargs):
         data = TimesSerializer(data=request.data)
@@ -87,7 +88,7 @@ class AcceptCallRequestHeroView(generics.UpdateAPIView):
 
 class DeclineCallRequestHeroView(generics.UpdateAPIView):
     serializer_class = CallRequestSerializer
-    permission_classes = (IsHeroOrStaff, IsOwnerOrStaff)
+    permission_classes = (IsAuthenticated, IsHeroOrStaff, IsOwnerOrStaff)
 
     def patch(self, request, *args, **kwargs):
         data = DeclineReasonSerializer(data=request.data)
@@ -111,7 +112,7 @@ class DeclineCallRequestHeroView(generics.UpdateAPIView):
 
 class NewTimeSuggestionsView(generics.UpdateAPIView):
     serializer_class = CallRequestSerializer
-    permission_classes = (IsOwnerOrStaff,)
+    permission_classes = (IsAuthenticated, IsOwnerOrStaff,)
 
     def patch(self, request, *args, **kwargs):
         data = TimesSerializer(data=request.data)
@@ -143,7 +144,7 @@ class NewTimeSuggestionsView(generics.UpdateAPIView):
 
 class AgreedTimeSuggestionView(generics.UpdateAPIView):
     serializer_class = CallRequestSerializer
-    permission_classes = (IsOwnerOrStaff,)
+    permission_classes = (IsAuthenticated, IsOwnerOrStaff,)
 
     def patch(self, request, *args, **kwargs):
         data = AgreedTimeSerializer(data=request.data)
@@ -182,8 +183,43 @@ class AgreedTimeSuggestionView(generics.UpdateAPIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
+class CancelCallRequestView(generics.GenericAPIView):
+    serializer_class = CallRequestSerializer
+    permission_classes = (IsAuthenticated, IsOwnerOrStaff,)
 
+    def patch(self, request, *args, **kwargs):
+        data = CancelCallSerializer(data=request.data)
+        data.is_valid(raise_exception=True)
 
+        call_request = get_object_or_404(CallRequest, id=kwargs['pk'])
+        was_accepted = True if call_request.status == CallRequest.ACCEPTED else False
+        if was_accepted and not data.validated_data['force']:
+            user_cancelations = CanceledCallRequestLog.objects.filter(user=request.user).count()
+            if user_cancelations >= setting.ALLOWED_CANCELATIONS:
+                error = {'detail': 'You have already canceled {} times.'.format(setting.ALLOWED_CANCELATIONS)}
+                return Response(error, status=status.HTTP_409_CONFLICT)
+
+        call_request.status = CallRequest.CANCELED
+        call_request.save()
+
+        log = CanceledCallRequestLog.objects.create(
+            user=request.user,
+            call_request=call_request,
+            reason=data.validated_data['reason'],
+            was_accepted=was_accepted
+        )
+
+        if call_request.user == request.user:
+            # User canceled, send confrimation to user and alert hero
+            call_request.user.send_cancelation_confirmation_email(call_request.hero.user)
+            call_request.hero.user.alert_user_of_cancelation_email(call_request.user, log.reason)
+        else:
+            # Hero canceled, send confrimation to hero and alert user
+            call_request.hero.user.send_cancelation_confirmation_email(call_request.user)
+            call_request.user.alert_user_of_cancelation_email(call_request.hero.user, log.reason)
+
+        serializer = self.serializer_class(call_request)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 
