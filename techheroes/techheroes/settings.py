@@ -70,7 +70,7 @@ ROOT_URLCONF = 'techheroes.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'static_dist'),],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -159,6 +159,11 @@ Q_CLUSTER = {
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static_root')
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, 'static_dist'),
+)
+
 
 SERVER_EMAIL = 'Tech Heroes <notifications@techherosapp.com>'
 
@@ -188,6 +193,7 @@ else:
     EMAIL_BACKEND = 'django_ses.SESBackend'
 
 # Constants
+PAGE_CACHE_SECONDS = 1 if DEBUG else 60
 AUTH_TOKEN_EXP_IN_DAYS = 7
 VERIFICATION_TOKEN_EXP_IN_DAYS = 7
 SMS_REMINDER_TIME_IN_MIN = 15

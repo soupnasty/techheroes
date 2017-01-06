@@ -45,8 +45,8 @@ There are a few configurations managed as environment variables. In the developm
 0. [Helpful frontend Docker workflow article](https://medium.com/@tribou/react-and-flux-a-docker-development-workflow-469957f3bbf0#.wko4im9d1)
 1. Add dependencies to package.json file
 2. Run `docker-compose run web npm install` download the node_modules locally
-3. Make front end changes and test them manually
-4. Run `docker-compose up` to test the system as a whole in prod-like environment
+3. Run `docker-compose up` to bundle the react code
+4. You will see a static_dist folder appear in the techheroes directory. This is how you know its ready.
 
 
 ## API Table of Contents

@@ -10,12 +10,19 @@ services:
         ports:
           - "6379:6379"
 
+    web:
+        image: node:6.9.2-onbuild
+        command: npm run dev
+        volumes:
+          - .:/usr/src/app/
+
     django:
         build: .
         image: techheroes/django
         command: python manage.py runserver 0.0.0.0:8000
         depends_on:
           - db
+          - web
         volumes:
           - .:/src
         ports:
@@ -23,22 +30,13 @@ services:
         env_file:
           - ./env/dev.txt
 
-    web:
-        image: node:6.9.2-onbuild
-        command: npm run dev
-        links:
-          - django
-        volumes:
-          - .:/usr/src/app/
-        ports:
-          - "3000:3000"
-
     worker:
         image: techheroes/django
         command: python manage.py qcluster
         depends_on:
           - db
           - redis
+          - web
         volumes:
           - .:/src
         env_file:

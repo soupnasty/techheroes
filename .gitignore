@@ -49,6 +49,10 @@ coverage.xml
 *.log
 local_settings.py
 
+# Static files
+techheroes/static_dist/
+techheroes/static_root/
+
 # Node modules
 node_modules/
 yarn.lock
