@@ -27,7 +27,7 @@ There are a few configurations managed as environment variables. In the developm
 ## Steps to get Docker setup
 1. Create a env folder with a dev.txt file in your local project directory
 2. Insert needed environment variables in dev.txt file: SECRET_KEY=anything, DEBUG=True
-3. Install docker, docker-compose and docker-machine
+3. Install docker, docker-compose and docker-machine (if installing with homebrew also run "brew cask install virtualbox")
 4. Create a docker-machine `docker-machine create --driver "virtualbox" myBoxName`
 5. Start the machine `docker-machine start myBoxName`
 6. Allow docker-machine commands to be used in terminal `eval "$(docker-machine env myBoxName)"`
