@@ -61,15 +61,53 @@ const common = {
             root: process.cwd()
         })
     ],
+    resolve: {
+        extensions: ['.jsx', '.js', '.json', '.scss', '.css'],
+        modules: ['node_modules']
+    },
     module: {
-        loaders: [
-            {
-                test: /\.jsx?$/,
-                exclude: /node_modules/,
-                loaders: ['react-hot', 'babel-loader?presets[]=react,presets[]=es2015']
-            }
-        ]
-    }
+       rules: [
+           {
+               test: /\.js$/,
+               use: [
+                   { loader: 'babel-loader' }
+               ],
+               exclude: /node_modules/
+           },
+           {
+               test: /\.jpe?g$|\.gif$|\.png$/,
+               loader: 'file-loader?name=/images/[name].[ext]?[hash]'
+           },
+           {
+               test: /\.woff(\?.*)?$/,
+               loader: 'url-loader?name=/fonts/[name].[ext]&limit=10000&mimetype=application/font-woff'
+           },
+           {
+               test: /\.woff2(\?.*)?$/,
+               loader: 'url-loader?name=/fonts/[name].[ext]&limit=10000&mimetype=application/font-woff2'
+           },
+           {
+               test: /\.ttf(\?.*)?$/,
+               loader: 'url-loader?name=/fonts/[name].[ext]&limit=10000&mimetype=application/octet-stream'
+           },
+           {
+               test: /\.eot(\?.*)?$/,
+               loader: 'file-loader?name=/fonts/[name].[ext]'
+           },
+           {
+               test: /\.otf(\?.*)?$/,
+               loader: 'file-loader?name=/fonts/[name].[ext]&mimetype=application/font-otf'
+           },
+           {
+               test: /\.svg(\?.*)?$/,
+               loader: 'url-loader?name=/fonts/[name].[ext]&limit=10000&mimetype=image/svg+xml'
+           },
+           {
+               test: /\.json(\?.*)?$/,
+               loader: 'file-loader?name=/files/[name].[ext]'
+           }
+       ]
+   },
 };
 
 switch (TARGET) {

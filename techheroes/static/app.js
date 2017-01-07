@@ -3,7 +3,6 @@ import { Link } from 'react-router';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 import classNames from 'classnames';
-import { connect } from 'react-redux';
 import { asyncConnect } from 'redux-async-connect';
 
 // import { authLogoutAndRedirect } from './actions/auth';
@@ -65,7 +64,7 @@ export default class App extends React.Component {
                                 <span className="icon-bar"/>
                             </button>
                             <a className="navbar-brand" tabIndex="0" onClick={() => {} }>
-                                Django React Redux Demo
+                                Jesus, finally...fuck node_modules, webpack, mark zuckerburg, and babel
                             </a>
                         </div>
                         <div className="collapse navbar-collapse" id="top-navbar">

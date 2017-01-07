@@ -12,7 +12,7 @@ import configureStore from './redux/store/configureStore';
 // TODO
 // const client = new ApiClient();
 
-const target = document.getElementById('root');
+const target = document.getElementById('app');
 
 const store = configureStore(window.INITIAL_STATE, browserHistory);
 const history = syncHistoryWithStore(browserHistory, store);
