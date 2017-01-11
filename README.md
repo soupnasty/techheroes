@@ -37,16 +37,15 @@ There are a few configurations managed as environment variables. In the developm
 1. Make sure you are in the directory with the docker-compose.yml
 2. Run `docker-compose build` (only if new dependencies were added)
 3. Run `docker-compose run django python manage.py migrate` (only if new migrations are needed)
-4. Run `docker-compose up`
+4. Run `docker-compose up` (wait for webpack to finish bundling)
 5. You can make backend changes and save while the server is up
 6. Run `docker-compose run django py.test` to run backend tests
 
 ## Frontend local development workflow
-0. [Helpful frontend Docker workflow article](https://medium.com/@tribou/react-and-flux-a-docker-development-workflow-469957f3bbf0#.wko4im9d1)
-1. Add dependencies to package.json file
+1. Make sure you are in the directory with the docker-compose.yml
 2. Run `docker-compose run web npm install` download the node_modules locally
-3. Run `docker-compose up` to bundle the react code
-4. You will see a static_dist folder appear in the techheroes directory. This is how you know its ready.
+3. Run `docker-compose up` (wait for webpack to finish bundling)
+4. You can make frontend changes and save while the server is up 
 
 
 ## API Table of Contents

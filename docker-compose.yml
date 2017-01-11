@@ -12,9 +12,11 @@ services:
 
     web:
         image: node:6.9.2-onbuild
-        command: npm run dev
+        command: npm run start
         volumes:
           - .:/usr/src/app/
+        ports:
+          - "3000:3000"
 
     django:
         build: .
@@ -22,9 +24,10 @@ services:
         command: python manage.py runserver 0.0.0.0:8000
         depends_on:
           - db
-          - web
         volumes:
           - .:/src
+        volumes_from:
+          - web
         ports:
           - "8000:8000"
         env_file:

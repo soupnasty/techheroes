@@ -33,6 +33,7 @@ INSTALLED_APPS = [
     'bandit',
     'django_q',
     'timezone_field',
+    'webpack_loader',
 
     'accounts',
     'authentication',
@@ -70,7 +71,7 @@ ROOT_URLCONF = 'techheroes.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'static_dist'),],
+        'DIRS': [os.path.join(BASE_DIR, 'templates'),],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -159,10 +160,16 @@ Q_CLUSTER = {
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'static_root')
 STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, 'static_dist'),
+    os.path.join(BASE_DIR, 'static'),
 )
+
+WEBPACK_LOADER = {
+    'DEFAULT': {
+        'BUNDLE_DIR_NAME': 'bundles/local/',
+        'STATS_FILE': os.path.join(os.path.dirname(BASE_DIR), 'webpack/webpack-stats-local.json'),
+    }
+}
 
 
 SERVER_EMAIL = 'Tech Heroes <notifications@techherosapp.com>'
