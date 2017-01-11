@@ -3,16 +3,16 @@ var BundleTracker = require('webpack-bundle-tracker')
 
 var config = require('./base.config.js')
 
-config.output.path = require('path').resolve('../techheroes/static/bundles/prod/')
+config.output.path = require('path').resolve('../techheroes/static/bundles/stage/')
 
 config.plugins = config.plugins.concat([
-  new BundleTracker({filename: './webpack/webpack-stats-prod.json'}),
+  new BundleTracker({filename: './webpack/webpack-stats-stage.json'}),
 
   // removes a lot of debugging code in React
   new webpack.DefinePlugin({
     'process.env': {
-      'NODE_ENV': JSON.stringify('production'),
-      'BASE_API_URL': JSON.stringify('https://techheroes.xyz/api/v1/'),
+      'NODE_ENV': JSON.stringify('staging'),
+      'BASE_API_URL': JSON.stringify('https://stage.techheroes.xyz/api/v1/'),
   }}),
 
   // keeps hashes consistent between compilations
