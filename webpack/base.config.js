@@ -21,7 +21,7 @@ module.exports = {
 
   entry: {
       vendors: VENDOR,
-      SampleApp: path.join(__dirname, '../techheroes/static')
+      app: path.join(__dirname, '../techheroes/static')
   },
 
   output: {
