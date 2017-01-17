@@ -2,13 +2,26 @@ var path = require("path")
 var webpack = require('webpack')
 var BundleTracker = require('webpack-bundle-tracker')
 
+const VENDOR = [
+    'babel-polyfill',
+    'history',
+    'react',
+    'react-dom',
+    'react-redux',
+    'react-router',
+    'react-mixin',
+    'classnames',
+    'redux',
+    'react-router-redux',
+    'jquery',
+];
 
 module.exports = {
   context: __dirname,
 
   entry: {
-      vendors: ['react'],
-      SampleApp: path.join(__dirname, '../techheroes/static/SampleApp')
+      vendors: VENDOR,
+      SampleApp: path.join(__dirname, '../techheroes/static')
   },
 
   output: {
@@ -18,6 +31,11 @@ module.exports = {
 
   plugins: [
       new webpack.optimize.CommonsChunkPlugin('vendors', 'vendors.js'),
+      new webpack.ProvidePlugin({
+            '$': 'jquery',
+            'jQuery': 'jquery',
+            'window.jQuery': 'jquery'
+        }),
   ],
 
   module: {
@@ -25,7 +43,7 @@ module.exports = {
   },
 
   resolve: {
-    modulesDirectories: ['node_modules', 'bower_components'],
+    modulesDirectories: ['node_modules'],
     extensions: ['', '.js', '.jsx']
   },
 
