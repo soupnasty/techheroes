@@ -32,7 +32,7 @@ export default class SampleAppContainer extends React.Component {
       <div className="container">
         <div className="row">
           <div className="col-sm-12">
-            <Headline>Sample App!</Headline>
+            <Headline>Sample App!!!</Headline>
             <div style={[styles.button]} onClick={() => this.handleClick()}>INCREASE</div>
             <p style={[styles.counter]}>{counters.clicks}</p>
             <p>{process.env.BASE_API_URL}</p>
