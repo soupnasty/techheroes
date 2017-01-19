@@ -13,7 +13,8 @@ export default class HomeView extends React.Component {
     render() {
         return (
             <div className="container">
-              hey
+              <h1>YOYOYOYOYOOOOOO</h1>
+              <div>HEYEHEYEHEYEHEY</div>
             </div>
         );
     }

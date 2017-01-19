@@ -2,7 +2,7 @@ import thunk from 'redux-thunk';
 import { applyMiddleware, compose, createStore } from 'redux';
 import { routerMiddleware } from 'react-router-redux';
 
-import rootReducer from '../modules';
+import rootReducer from '../reducers';
 
 export default function configureStore(initialState, history) {
     // Add so dispatched route actions to the history

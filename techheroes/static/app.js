@@ -5,7 +5,7 @@ import { push } from 'react-router-redux';
 import classNames from 'classnames';
 import { asyncConnect } from 'redux-async-connect';
 
-// import { authLogoutAndRedirect } from './actions/auth';
+// import { authLogoutAndRedirect } from './redux/actions/auth';
 // import './styles/main.scss';
 
 @asyncConnect([{}])
@@ -64,7 +64,7 @@ export default class App extends React.Component {
                                 <span className="icon-bar"/>
                             </button>
                             <a className="navbar-brand" tabIndex="0" onClick={() => {} }>
-                                Jesus, finally...fuck node_modules, webpack, mark zuckerburg, and babel
+                                Tech Heroes
                             </a>
                         </div>
                         <div className="collapse navbar-collapse" id="top-navbar">
