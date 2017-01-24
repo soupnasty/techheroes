@@ -3,18 +3,18 @@ import { Link } from 'react-router';
 import { connect } from 'react-redux';
 import { Footer, Header, NavBar, Pricing } from '../../components'
 
-// import styles from './index.scss'
 
 export default class HomeView extends React.Component {
 
   render() {
+    const styles = require('./index.scss');
     return (
       <span>
         <NavBar />
         <Header />
         <section>
           <div className='cut cut-top' />
-          <div className='container'>
+          <div className={styles.container}>
             <div className='row intro-tables'>
               <div className='col-md-4'>
                 <div className='intro-table intro-table-first'>

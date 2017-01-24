@@ -35,8 +35,9 @@ config.plugins = config.plugins.concat([
 
 // Add a loader for JSX files with react-hot enabled
 config.module.loaders.push(
-  { test: /\.js?$/, exclude: /node_modules/, loaders: ['react-hot', 'babel'] },
-  { test: /\.css$/, exclude: /node_modules/, loader: 'style-loader!autoprefixer-loader!css-loader' }
+  { test: /\.jsx?$/, exclude: /node_modules/, loaders: ['react-hot', 'babel'] },
+  { test: /\.css$/, exclude: /node_modules/, loader: 'style-loader!css-loader' },
+  { test: /\.scss$/, exclude: /node_modules/, loader: 'style-loader!css-loader?modules&importLoaders=2&sourceMap&localIdentName=[local]___[hash:base64:5]!postcss-loader!sass-loader' }
 )
 
 module.exports = config
