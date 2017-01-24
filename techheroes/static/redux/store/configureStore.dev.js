@@ -5,7 +5,7 @@ import { applyMiddleware, compose, createStore } from 'redux';
 import createLogger from 'redux-logger';
 import { routerMiddleware } from 'react-router-redux';
 
-import rootReducer from '../modules';
+import rootReducer from '../reducers';
 import DevTools from '../../containers/Root/DevTools';
 
 export default function configureStore(initialState, history) {
@@ -25,8 +25,8 @@ export default function configureStore(initialState, history) {
 
     if (module.hot) {
         module.hot
-            .accept('../modules', () => {
-                const nextRootReducer = require('../modules/index'); // eslint-disable-line global-require
+            .accept('../reducers', () => {
+                const nextRootReducer = require('../reducers/index'); // eslint-disable-line global-require
 
                 store.replaceReducer(nextRootReducer);
             });

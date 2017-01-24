@@ -15,7 +15,7 @@ import configureStore from './redux/store/configureStore';
 const target = document.getElementById('app');
 
 const store = configureStore(window.INITIAL_STATE, browserHistory);
-const history = syncHistoryWithStore(browserHistory, store);
+const history = syncHistoryWithStore(browserHistory, store); 
 
 const node = (
     <Root store={store} history={history}/>
