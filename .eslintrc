@@ -1,0 +1,60 @@
+
+{ "extends": "eslint-config-airbnb",
+  "env": {
+    "browser": true,
+    "node": true,
+    "mocha": true
+  },
+  "parser": "babel-eslint",
+  "parserOptions": {
+    "ecmaFeatures": {
+      "experimentalObjectRestSpread": true
+    }
+  },
+  "rules": {
+    "react/prefer-stateless-function": 0,
+    "react/jsx-closing-bracket-location": 0,
+    "react/jsx-filename-extension": 0,
+    "react/jsx-indent-props": 0,
+    "react/no-multi-comp": 0,
+    "react/prop-types": 0,
+    "import/default": 0,
+    "import/no-duplicates": 0,
+    "import/named": 0,
+    "import/namespace": 0,
+    "import/no-unresolved": 0,
+    "import/no-named-as-default": 2,
+    "camelcase": 0,
+    "comma-dangle": 0, 
+    "indent": [2, 2, {"SwitchCase": 1}],
+    "jsx-quotes": [2, "prefer-single"],
+    "max-len": 0,
+    "no-console": 0,
+    "no-alert": 0,
+    "no-use-before-define": 0,
+    "semi": 0
+  },
+  "plugins": [
+    "react", "import"
+  ],
+  "settings": {
+    "import/parser": "babel-eslint",
+    "import/resolve": {
+      "moduleDirectory": ["node_modules", "src"]
+    }
+  },
+  "globals": {
+    "__DEVELOPMENT__": true,
+    "__CLIENT__": true,
+    "__SERVER__": true,
+    "__DISABLE_SSR__": true,
+    "__DEVTOOLS__": true,
+    "ga": true,
+    "google": true,
+    "promisepay": true,
+    "Raven": true,
+    "Stripe": true,
+    "socket": true,
+    "webpackIsomorphicTools": true
+  }
+}

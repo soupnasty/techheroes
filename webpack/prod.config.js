@@ -1,19 +1,19 @@
-var webpack = require('webpack')
-var BundleTracker = require('webpack-bundle-tracker')
+const webpack = require('webpack')
+const BundleTracker = require('webpack-bundle-tracker')
 
-var config = require('./base.config.js')
+const config = require('./base.config.js')
 
 config.output.path = require('path').resolve('../techheroes/static/bundles/prod/')
 
 config.plugins = config.plugins.concat([
-  new BundleTracker({filename: './webpack/webpack-stats-prod.json'}),
+  new BundleTracker({ filename: './webpack/webpack-stats-prod.json' }),
 
   // removes a lot of debugging code in React
   new webpack.DefinePlugin({
     'process.env': {
-      'NODE_ENV': JSON.stringify('production'),
-      'BASE_API_URL': JSON.stringify('https://techheroes.xyz/api/v1/'),
-  }}),
+      NODE_ENV: JSON.stringify('production'),
+      BASE_API_URL: JSON.stringify('https://techheroes.xyz/api/v1/'),
+    } }),
 
   // keeps hashes consistent between compilations
   new webpack.optimize.OccurenceOrderPlugin(),
@@ -28,7 +28,8 @@ config.plugins = config.plugins.concat([
 
 // Add a loader for JSX files
 config.module.loaders.push(
-  { test: /\.jsx?$/, exclude: /node_modules/, loader: 'babel' }
+  { test: /\.js?$/, exclude: /node_modules/, loader: 'babel' },
+  { test: /\.css$/, exclude: /node_modules/, loader: 'style-loader!autoprefixer-loader!css-loader' }
 )
 
 module.exports = config

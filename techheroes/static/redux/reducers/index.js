@@ -1,10 +1,12 @@
 import { combineReducers } from 'redux';
+import { reducer as reduxAsyncConnect } from 'redux-async-connect';
 import { routerReducer } from 'react-router-redux';
-import authReducer from './auth';
-import dataReducer from './data';
+import { reducer as form } from 'redux-form';
+import info from './info';
 
 export default combineReducers({
-    auth: authReducer,
-    data: dataReducer,
-    routing: routerReducer
+  info,
+  form,
+  reduxAsyncConnect,
+  routing: routerReducer
 });

@@ -15,15 +15,15 @@ import configureStore from './redux/store/configureStore';
 const target = document.getElementById('app');
 
 const store = configureStore(window.INITIAL_STATE, browserHistory);
-const history = syncHistoryWithStore(browserHistory, store); 
+const history = syncHistoryWithStore(browserHistory, store);
 
 const node = (
-    <Root store={store} history={history}/>
+  <Root store={store} history={history} />
 );
 
 // TODO
 // const token = sessionStorage.getItem('token');
-let user = {};
+const user = {};
 // try {
 //     user = JSON.parse(sessionStorage.getItem('user'));
 // } catch (e) {
