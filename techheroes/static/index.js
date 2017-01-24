@@ -21,18 +21,7 @@ const node = (
   <Root store={store} history={history} />
 );
 
-// TODO
-// const token = sessionStorage.getItem('token');
 const user = {};
-// try {
-//     user = JSON.parse(sessionStorage.getItem('user'));
-// } catch (e) {
-//     // Failed to parse
-// }
 
-// TODO
-// if (token !== null) {
-//     store.dispatch(authLoginUserSuccess(token, user));
-// }
 
 ReactDOM.render(node, target);
