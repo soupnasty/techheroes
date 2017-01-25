@@ -56,7 +56,7 @@ techheroes/static_root/
 # Node modules
 node_modules/
 yarn.lock
-npm-debug.log
+
 
 # Coverage
 coverage/
@@ -64,7 +64,6 @@ coverage/
 .cache
 
 # static validation files
-.eslintrc
 .sass-lint.yml
 .prospector.yml
 .coveragerc
